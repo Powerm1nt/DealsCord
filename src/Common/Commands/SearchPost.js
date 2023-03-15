@@ -1,4 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js')
+const makePost = require('../Embeds/VintedPost')
+const { createPost } = require('../Embeds/VintedPost')
 
 const searchCommand = new SlashCommandBuilder()
   .setName('search')
@@ -7,6 +9,6 @@ const searchCommand = new SlashCommandBuilder()
 module.exports = {
   data: searchCommand,
   async execute (interaction) {
-    await interaction.reply('Pong!')
+    await createPost(interaction)
   }
 }
