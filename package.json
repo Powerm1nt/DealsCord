@@ -1,0 +1,16 @@
+{
+  "name": "vinted-bot",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "dependencies": {
+    "@powerm1nt/vinted-api": "^2.9.2",
+    "discord.js": "^14.8.0"
+  },
+  "scripts": {
+    "build": "rm -rf build && esbuild --minify --bundle src/index.js --platform=node --outfile=dist/app-prod.js",
+    "dev": "rm -rf build && mkdir build && esbuild --bundle src/index.js --platform=node --outfile=build/app-debug.js && node build/app-debug.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.17.11"
+  }
+}
