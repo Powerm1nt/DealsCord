@@ -1,5 +1,6 @@
 const { ConfigProvider } = require('./Common/ConfigProvider')
 const { Client, GatewayIntentBits, Events } = require('discord.js')
+const chalk = require('chalk')
 // vinted.fetchCookie()
 //    .then((data) => {
 //       console.log(data)
@@ -17,5 +18,5 @@ const client = new Client({
 client.login(config.get('token'))
 
 client.once(Events.ClientReady, () => {
-  console.log('Ready!')
+  console.log(`Logged in as ${chalk.white.bold(client.user.tag)}!`)
 })
