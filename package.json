@@ -8,15 +8,15 @@
     "discord.js": "^14.8.0"
   },
   "scripts": {
-    "build": "rm -rf build && esbuild --minify --bundle src/index.js --platform=node --outfile=dist/app-prod.js",
-    "dev": "rm -rf build && mkdir build && esbuild --bundle src/index.js --platform=node --outfile=build/app-debug.js && node build/app-debug.js"
+    "start": "node .",
+    "dev": "nodemon ."
   },
   "devDependencies": {
-    "esbuild": "^0.17.11",
     "eslint": "^8.30.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.6.0",
-    "eslint-plugin-promise": "^6.1.1"
+    "eslint-plugin-promise": "^6.1.1",
+    "nodemon": "^2.0.21"
   }
 }
