@@ -1,11 +1,11 @@
 const { SlashCommandBuilder } = require('discord.js')
 
-const searchCommand = new SlashCommandBuilder()
-  .setName('search')
-  .setDescription('Search for a vinted post')
+const removeCommand = new SlashCommandBuilder()
+  .setName('remove')
+  .setDescription('Remove a vinted post alert')
 
 module.exports = {
-  data: searchCommand,
+  data: removeCommand,
   async execute (interaction) {
     await interaction.reply('Pong!')
   }
