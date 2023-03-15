@@ -45,4 +45,4 @@ class ConfigProvider {
   }
 }
 
-export { ConfigProvider }
+module.exports = { ConfigProvider }
