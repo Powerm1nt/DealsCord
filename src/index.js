@@ -3,13 +3,6 @@ const { Client, GatewayIntentBits, Events, SlashCommandBuilder, Collection } = r
 const chalk = require('chalk')
 const path = require('path')
 const fs = require('fs')
-// vinted.fetchCookie()
-//    .then((data) => {
-//       console.log(data)
-//       vinted.search('https://www.vinted.fr/vetements?search_text=pokemon?page=2').then((data) => {
-//          console.log(data)
-//       })
-//    })
 
 const config = new ConfigProvider()
 if (!config.has('token')) config.set('token', '<INSERT TOKEN HERE>') && config.save()
