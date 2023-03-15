@@ -1,10 +1,5 @@
-import fs from 'fs'
-import * as path from 'path'
-
-const CONFIG_DIR = process.platform === 'windows'
-  ? path.join(process.env.APPDATA, 'pakagify/')
-  : path.join(process.env.HOME, '.config/pakagify/')
-const CONFIG_FILE = path.join(CONFIG_DIR, 'pkcli.json')
+const fs = require('fs')
+const CONFIG_FILE = 'config.json'
 
 class ConfigProvider {
   constructor () {
@@ -14,6 +9,7 @@ class ConfigProvider {
 
   set (key, value) {
     this._config[key] = value
+    return true
   }
 
   get (key) {
@@ -27,22 +23,26 @@ class ConfigProvider {
 
   remove (key) {
     delete this._config[key]
+    return true
   }
 
   clear () {
     this._config = {}
+    return true
   }
 
   save () {
     // Save the json config
-    if (!fs.existsSync(CONFIG_DIR)) fs.mkdirSync(CONFIG_DIR, { recursive: true })
     fs.writeFileSync(CONFIG_FILE, JSON.stringify(this._config, null, 2)) // TODO Impl locks
+    return true
   }
 
   retrieve () {
     // Retrieve the json config
     if (!fs.existsSync(CONFIG_FILE)) this.save()
     this._config = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'))
+    return true
   }
 }
+
 export { ConfigProvider }
