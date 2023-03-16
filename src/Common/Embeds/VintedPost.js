@@ -3,7 +3,7 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, Events } = require('disco
 function generateEmbed (posts, interaction, postIndex) {
   const avatar = interaction.client.user.avatarURL()
 
-  return new EmbedBuilder()
+  const embed = new EmbedBuilder()
     .setColor(0x0099FF)
     .setTitle(posts[postIndex].title)
     .setURL(posts[postIndex].url)
@@ -24,6 +24,8 @@ function generateEmbed (posts, interaction, postIndex) {
     value: posts[postIndex].size_title,
     inline: false
   })
+
+  return embed
 }
 
 class VintedPost {
