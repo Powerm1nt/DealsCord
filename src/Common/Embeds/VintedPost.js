@@ -1,71 +1,111 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, Events } = require('discord.js')
+const { EmbedBuilder } = require('discord.js')
+const { pagination, ButtonTypes, ButtonStyles } = require('@devraelfreeze/discordjs-pagination')
 
-function generateEmbed (posts, interaction, postIndex, lastPostIndex) {
+function generateEmbed (post, interaction) {
+  console.log(post)
   const avatar = interaction.client.user.avatarURL()
+  const rating = post.favourite_count
+  const fullStars = 46
+  const halfStars = Math.round((rating / fullStars) * 5)
+  const fullStarEmoji = '⭐'
+  const fullStarsString = halfStars <= 1 ? fullStarEmoji : fullStarEmoji.repeat(halfStars)
 
   const embed = new EmbedBuilder()
     .setColor(0x0099FF)
-    .setTitle(posts[postIndex].title)
-    .setURL(posts[postIndex].url)
+    .setTitle(post.title)
+    .setURL(post.url)
     .setAuthor({
-      name: posts[postIndex].user.login,
-      url: posts[postIndex].user.url
+      name: post.user.login,
+      url: post.user.url
     })
-    .setThumbnail(posts[postIndex].user.photo.url)
-    .setImage(posts[postIndex].photo.full_size_url)
+
+  if (post.user.photo && post.user.photo.url) {
+    embed.setThumbnail(post.user.photo.url)
+  }
+
+  embed
+    .setImage(post.photo.full_size_url)
     .addFields(
-      { name: 'Price', value: Math.round(posts[postIndex].price * 100) / 100 + '€', inline: false },
-      { name: 'Reputation', value: posts[postIndex].favourite_count.toString(), inline: false }
+      {
+        name: '💵 Prix',
+        value: Math.round(post.price * 100) / 100 + ' ' + post.currency,
+        inline: false
+      },
+      { name: '✨ Réputation', value: `${fullStarsString} (${rating})`, inline: false }
     )
     .setTimestamp()
     .setFooter({ text: interaction.client.user.tag, iconURL: avatar })
-  posts[postIndex].size_title >= 1 && embed.addFields({
-    name: 'Size',
-    value: posts[postIndex].size_title,
+  post.size_title >= 1 && embed.addFields({
+    name: '📏 Taille',
+    value: post.size_title,
     inline: false
   })
 
-  const buttons = new ActionRowBuilder()
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId('prevVintedPost')
-        .setLabel('Prev')
-        .setStyle('Secondary')
-        .setDisabled(postIndex === 0),
+  post.brand_title && embed.addFields({
+    name: '🏷️ Marque',
+    value: post.brand_title,
+    inline: false
+  })
 
-      new ButtonBuilder()
-        .setCustomId('nextVintedPost')
-        .setLabel('Next')
-        .setStyle('Primary')
-        .setDisabled(postIndex === lastPostIndex)
-    )
+  post.user.login && embed.addFields({
+    name: '👤 Vendeur',
+    value: `[${post.user.login}](${post.user.profile_url})`,
+    inline: false
+  })
 
-  console.log(posts[0])
+  post.category_title && embed.addFields({
+    name: '📦 Catégorie',
+    value: post.category_title,
+    inline: false
+  })
 
-  return { components: [buttons], embeds: [embed] }
+  post.condition_title && embed.addFields({
+    name: '📦 État',
+    value: post.condition_title,
+    inline: false
+  })
+
+  post.color_title && embed.addFields({
+    name: '🎨 Couleur',
+    value: post.color_title,
+    inline: false
+  })
+
+  return embed
 }
 
 class VintedPost {
   async makePost (interaction, posts) {
     this.interaction = interaction
     this.posts = posts
-    this.postIndex = 0
-    this.lastPostIndex = this.posts.length - 1
+    this.arrayEmbeds = []
 
-    interaction.client.on(Events.InteractionCreate, interaction => {
-      if (!interaction.isButton()) return
-      if (interaction.customId === 'nextVintedPost') {
-        this.postIndex++
-        interaction.update(generateEmbed(posts, interaction, this.postIndex, this.lastPostIndex))
-      }
-
-      if (interaction.customId === 'prevVintedPost') {
-        this.postIndex--
-        interaction.update(generateEmbed(posts, interaction, this.postIndex, this.lastPostIndex))
-      }
+    posts.forEach((post, index) => {
+      this.arrayEmbeds.push(generateEmbed(post, interaction))
     })
 
-    return await interaction.reply(generateEmbed(posts, interaction, this.postIndex, this.lastPostIndex))
+    await pagination({
+      embeds: this.arrayEmbeds,
+      author: interaction.member.user,
+      interaction,
+      ephemeral: true,
+      time: 50000,
+      disableButtons: true,
+      fastSkip: false,
+      pageTravel: false,
+      buttons: [
+        {
+          type: ButtonTypes.previous,
+          label: 'Previous Page',
+          style: ButtonStyles.Secondary
+        },
+        {
+          type: ButtonTypes.next,
+          label: 'Next Page',
+          style: ButtonStyles.Success
+        }
+      ]
+    })
   }
 }
 

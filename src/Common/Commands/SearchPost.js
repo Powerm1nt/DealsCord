@@ -1,7 +1,6 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder } = require('discord.js')
-const makePost = require('../Embeds/VintedPost')
-const { createPostCollection, VintedPost } = require('../Embeds/VintedPost')
+const { SlashCommandBuilder } = require('discord.js')
 const vinted = require('@powerm1nt/vinted-api')
+const { VintedPost } = require('../Embeds/VintedPost')
 
 const searchCommand = new SlashCommandBuilder()
   .setName('search')
@@ -18,8 +17,7 @@ module.exports = {
     await vinted.fetchCookie()
       .then(async (data) => {
         await vinted.search(`https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}?page=1`).then(async (data) => {
-          const vintedPosts = data.items
-          await new VintedPost().makePost(interaction, vintedPosts)
+          await new VintedPost().makePost(interaction, data.items)
         })
       })
   }
