@@ -37,7 +37,7 @@ module.exports = {
       .then(async (data) => {
         const searchUrl = `https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}&price_from=${interaction.options.getString('price')}&size=${interaction.options.getString('size')}&reputation=${interaction.options.getString('reputation')}`
 
-        await vinted.search(`https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}?page=1`).then(async (data) => {
+        await vinted.search(searchUrl).then(async (data) => {
           await new VintedPost().makePost(interaction, data.items)
         })
       })
