@@ -109,4 +109,4 @@ class VintedPost {
   }
 }
 
-module.exports = { VintedPost }
+module.exports = { VintedPost, generateEmbed }
