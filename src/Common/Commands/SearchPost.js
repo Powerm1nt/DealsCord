@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js')
 const vinted = require('@powerm1nt/vinted-api')
-const { VintedPost } = require('../Embeds/VintedPost')
+const { VintedPost } = require('../Embeds/VintedCollections')
 
 const searchCommand = new SlashCommandBuilder()
   .setName('search')
