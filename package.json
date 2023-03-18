@@ -7,6 +7,8 @@
     "@powerm1nt/vinted-api": "^2.9.4",
     "chalk": "^4.1.2",
     "discord.js": "^14.8.0",
+    "node-schedule": "^2.1.1",
+    "parse-duration": "^1.0.3",
     "sequelize": "^6.29.3",
     "sqlite3": "^5.1.6"
   },
