@@ -4,7 +4,7 @@ const chalk = require('chalk')
 const path = require('path')
 const fs = require('fs')
 const { Sequelize } = require('sequelize')
-const AlertModel = require('./Common/DataModels/AlertModel')
+const Alert = require('./Common/DataModels/Alert')
 
 const config = new ConfigProvider()
 if (!config.has('token')) config.set('token', '<INSERT TOKEN HERE>') && config.save()
