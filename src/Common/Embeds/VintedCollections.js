@@ -3,7 +3,7 @@ const { pagination, ButtonTypes, ButtonStyles } = require('@devraelfreeze/discor
 
 function generateEmbed (post, interaction) {
   console.log(post)
-  const avatar = interaction.client.user.avatarURL()
+  const avatar = interaction && interaction.client.user.avatarURL()
   const rating = post.favourite_count
   const fullStars = 46
   const halfStars = Math.round((rating / fullStars) * 5)
@@ -34,7 +34,12 @@ function generateEmbed (post, interaction) {
       { name: '✨ Réputation', value: `${fullStarsString} (${rating})`, inline: false }
     )
     .setTimestamp()
-    .setFooter({ text: interaction.client.user.tag, iconURL: avatar })
+    .setFooter(interaction
+      ? {
+          text: interaction.client.user.tag,
+          iconURL: avatar
+        }
+      : { text: `Publication Vinted | ID: ${post.id}` })
   post.size_title >= 1 && embed.addFields({
     name: '📏 Taille',
     value: post.size_title,
