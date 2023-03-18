@@ -3,6 +3,8 @@ const { Client, GatewayIntentBits, Events, Collection } = require('discord.js')
 const chalk = require('chalk')
 const path = require('path')
 const fs = require('fs')
+const { Sequelize } = require('sequelize')
+const AlertModel = require('./Common/DataModels/AlertModel')
 
 const config = new ConfigProvider()
 if (!config.has('token')) config.set('token', '<INSERT TOKEN HERE>') && config.save()
@@ -51,7 +53,34 @@ client.on(Events.InteractionCreate, async interaction => {
   }
 })
 
-client.login(config.get('token'))
+// Sqlite Database
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: 'data.db'
+})
+
+// Init the Database
+async function initDb () {
+  try {
+    await sequelize.authenticate()
+    console.log('Connection has been established successfully.')
+  } catch (error) {
+    console.error('Unable to connect to the database:', error)
+    process.exit(1)
+  }
+
+  try {
+    await sequelize.sync()
+    console.log('Database synced successfully.')
+  } catch (error) {
+    console.error('Unable to sync the database:', error)
+    process.exit(1)
+  }
+}
+
+initDb().then(async () => {
+  await client.login(config.get('token'))
+})
 
 client.once(Events.ClientReady, () => {
   console.log(`Logged in as ${chalk.white.bold(client.user.tag)}!`)
