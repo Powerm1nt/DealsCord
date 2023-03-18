@@ -1,5 +1,5 @@
 const { ConfigProvider } = require('./Common/ConfigProvider')
-const { Client, GatewayIntentBits, Events, SlashCommandBuilder, Collection } = require('discord.js')
+const { Client, GatewayIntentBits, Events, Collection } = require('discord.js')
 const chalk = require('chalk')
 const path = require('path')
 const fs = require('fs')
