@@ -74,7 +74,7 @@ function generateEmbed (post, interaction) {
   return embed
 }
 
-class VintedPost {
+class VintedCollections {
   async makePost (interaction, posts) {
     this.interaction = interaction
     this.posts = posts
@@ -109,4 +109,4 @@ class VintedPost {
   }
 }
 
-module.exports = { VintedPost, generateEmbed }
+module.exports = { VintedPost: VintedCollections, generateEmbed }
