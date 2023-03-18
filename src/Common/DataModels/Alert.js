@@ -8,6 +8,7 @@ class Alert extends Model {
 }
 
 Alert.init({
+  name: 'string',
   keywords: 'string',
   channel: 'string',
   interval: 'string',
