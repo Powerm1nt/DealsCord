@@ -7,6 +7,12 @@ const createCommand = new SlashCommandBuilder()
   .setDescription('Create a new vinted post alert')
   .addStringOption(option =>
     option
+      .setName('name')
+      .setDescription('Name of the alert')
+      .setRequired(true)
+  )
+  .addStringOption(option =>
+    option
       .setName('keywords')
       .setDescription('Keywords to search for')
       .setRequired(true)
