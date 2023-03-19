@@ -94,9 +94,7 @@ class VintedCollections {
       author: interaction.member.user,
       interaction,
       ephemeral: true,
-      time: 50000,
-      disableButtons: true,
-      fastSkip: false,
+      time: 120000,
       pageTravel: false,
       buttons: [
         {
