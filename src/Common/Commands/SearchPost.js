@@ -13,6 +13,23 @@ const searchCommand = new SlashCommandBuilder()
   )
   .addStringOption(option =>
     option
+      .setName('filter')
+      .setDescription('Filter to search for')
+      .addChoices(
+        { name: 'Newest', value: 'newest' },
+        { name: 'Oldest', value: 'oldest' },
+        { name: 'Price: Low to High', value: 'price_asc' },
+        { name: 'Price: High to Low', value: 'price_desc' },
+        { name: 'Pertinence', value: 'pertinence' }
+      )
+  )
+  .addNumberOption(option =>
+    option
+      .setName('page')
+      .setDescription('Page to search for')
+  )
+  .addStringOption(option =>
+    option
       .setName('price')
       .setDescription('Price to search for')
       .setRequired(false)
@@ -35,7 +52,7 @@ module.exports = {
   async execute (interaction) {
     await vinted.fetchCookie()
       .then(async (data) => {
-        const searchUrl = `https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}&price_from=${interaction.options.getString('price')}&size=${interaction.options.getString('size')}&reputation=${interaction.options.getString('reputation')}`
+        const searchUrl = `https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}&price_from=${interaction.options.getString('price')}&size=${interaction.options.getString('size')}&reputation=${interaction.options.getString('reputation')}&order=${interaction.options.getString('filter')}`
 
         await vinted.search(searchUrl).then(async (data) => {
           await new VintedPost().makePost(interaction, data.items)
