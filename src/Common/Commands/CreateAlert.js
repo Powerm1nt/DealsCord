@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js')
 const vinted = require('@powerm1nt/vinted-api')
 const { VintedPost } = require('../Embeds/VintedCollections')
+const { getAlertManager } = require('../AlertManager')
 
 const createCommand = new SlashCommandBuilder()
   .setName('create')
@@ -31,6 +32,23 @@ const createCommand = new SlashCommandBuilder()
   )
   .addStringOption(option =>
     option
+      .setName('filter')
+      .setDescription('Filter to search for')
+      .addChoices(
+        { name: 'Newest', value: 'newest' },
+        { name: 'Oldest', value: 'oldest' },
+        { name: 'Price: Low to High', value: 'price_asc' },
+        { name: 'Price: High to Low', value: 'price_desc' },
+        { name: 'Pertinence', value: 'pertinence' }
+      )
+  )
+  .addNumberOption(option =>
+    option
+      .setName('page')
+      .setDescription('Page to search for')
+  )
+  .addStringOption(option =>
+    option
       .setName('price')
       .setDescription('Price to search for')
       .setRequired(false)
@@ -51,13 +69,27 @@ const createCommand = new SlashCommandBuilder()
 module.exports = {
   data: createCommand,
   async execute (interaction) {
-    await vinted.fetchCookie()
-      .then(async (data) => {
-        const searchUrl = `https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}&price_from=${interaction.options.getString('price')}&size=${interaction.options.getString('size')}&reputation=${interaction.options.getString('reputation')}`
-
-        await vinted.search(searchUrl).then(async (data) => {
-          await new VintedPost().makePost(interaction, data.items)
+    await getAlertManager().addAlert({
+      name: interaction.options.getString('name'),
+      keywords: interaction.options.getString('keywords'),
+      guildId: interaction.guild.id,
+      channel: interaction.options.getChannel('channel').id,
+      interval: interaction.options.getString('interval'),
+      author: interaction.user.id,
+      price: interaction.options.getString('price'),
+      size: interaction.options.getString('size'),
+      reputation: interaction.options.getString('reputation'),
+      page: interaction.options.getNumber('page'),
+      filter: interaction.options.getString('filter')
+    }, interaction)
+      .then(async (alert) => {
+        await interaction.reply({
+          content: `ℹ️ L'alerte **${alert.name}** a été créé avec succès !`,
+          ephemeral: true
         })
+      })
+      .catch(async (error) => {
+        await interaction.reply({ content: `🛑 **${error.message}**`, ephemeral: true })
       })
   }
 }
