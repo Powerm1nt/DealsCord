@@ -73,7 +73,7 @@ module.exports = {
       name: interaction.options.getString('name'),
       keywords: interaction.options.getString('keywords'),
       guildId: interaction.guild.id,
-      channel: interaction.options.getChannel('channel').id,
+      channelId: interaction.options.getChannel('channel').id,
       interval: interaction.options.getString('interval'),
       author: interaction.user.id,
       price: interaction.options.getString('price'),
@@ -90,6 +90,7 @@ module.exports = {
       })
       .catch(async (error) => {
         await interaction.reply({ content: `🛑 **${error.message}**`, ephemeral: true })
+        console.error(error)
       })
   }
 }
