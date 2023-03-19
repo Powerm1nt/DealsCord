@@ -1,14 +1,9 @@
-const { ConfigProvider } = require('./Common/ConfigProvider')
 const { Client, GatewayIntentBits, Events, Collection } = require('discord.js')
 const chalk = require('chalk')
 const path = require('path')
 const fs = require('fs')
-const { Sequelize } = require('sequelize')
-
-const config = new ConfigProvider()
-if (!config.has('token')) config.set('token', '<INSERT TOKEN HERE>') && config.save()
-if (!config.has('guildId')) config.set('guildId', '<INSERT GUILD ID HERE>') && config.save()
-if (!config.has('clientId')) config.set('clientId', '<INSERT CLIENT ID HERE>') && config.save()
+const mongoose = require('mongoose')
+require('dotenv').config()
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages]
@@ -52,33 +47,13 @@ client.on(Events.InteractionCreate, async interaction => {
   }
 })
 
-// Sqlite Database
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: 'data.db'
-})
-
 // Init the Database
 async function initDb () {
-  try {
-    await sequelize.authenticate()
-    console.log('Connection has been established successfully.')
-  } catch (error) {
-    console.error('Unable to connect to the database:', error)
-    process.exit(1)
-  }
-
-  try {
-    await sequelize.sync({ force: true })
-    console.log('Database synced successfully.')
-  } catch (error) {
-    console.error('Unable to sync the database:', error)
-    process.exit(1)
-  }
+  await mongoose.connect(process.env.DB_URI)
 }
 
 initDb().then(async () => {
-  await client.login(config.get('token'))
+  await client.login(process.env.TOKEN)
 })
 
 client.once(Events.ClientReady, () => {
