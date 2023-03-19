@@ -7,6 +7,7 @@
     "@powerm1nt/vinted-api": "^2.9.4",
     "chalk": "^4.1.2",
     "discord.js": "^14.8.0",
+    "dotenv": "^16.0.3",
     "mongoose": "^7.0.2",
     "parse-duration": "^1.0.3",
     "toad-scheduler": "^2.2.0"
