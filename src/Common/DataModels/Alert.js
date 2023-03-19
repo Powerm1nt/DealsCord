@@ -10,12 +10,15 @@ class Alert extends Model {
 Alert.init({
   name: 'string',
   keywords: 'string',
+  guildId: 'string',
   channel: 'string',
+  author: 'string',
   interval: 'string',
   price: 'string',
   size: 'string',
   reputation: 'string',
-  lastPost: 'string'
+  page: 'number',
+  filter: 'string'
 }, { sequelize, modelName: 'alert' })
 
 module.exports = Alert
