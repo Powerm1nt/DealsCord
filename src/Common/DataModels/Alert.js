@@ -1,4 +1,5 @@
 const { Model, Sequelize } = require('sequelize')
+
 const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: 'data.db'
@@ -11,12 +12,12 @@ Alert.init({
   name: 'string',
   keywords: 'string',
   guildId: 'string',
-  channel: 'string',
-  author: 'string',
-  interval: 'string',
-  price: 'string',
+  channelId: 'string',
+  author: 'number',
+  interval: 'number',
+  price: 'number',
   size: 'string',
-  reputation: 'string',
+  reputation: 'number',
   page: 'number',
   filter: 'string'
 }, { sequelize, modelName: 'alert' })
