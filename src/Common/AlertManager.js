@@ -49,8 +49,8 @@ class AlertManager {
           }, (err) => {
             console.log(err)
           })
+          if (!this.scheduler.existsById(`alert_${alert.name}`)) this.scheduler.addSimpleIntervalJob(new SimpleIntervalJob({ seconds: alert.interval }, task, { id: alert.name }))
 
-          this.scheduler.addSimpleIntervalJob(new SimpleIntervalJob({ seconds: alert.interval }, task, { id: alert.name }))
           this.alerts.push({
             name: alert.name, data: alert
           })
@@ -87,7 +87,7 @@ class AlertManager {
     })
   }
 
-  getAlerts () {
+  async getAlerts () {
     return this.alerts
   }
 }
