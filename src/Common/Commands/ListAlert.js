@@ -11,7 +11,6 @@ module.exports = {
     return await getAlertManager().getAlerts().then(alerts => {
       // Display a list of alerts
       const alertList = alerts.map(alert => {
-        console.log(alert)
         return {
           name: alert.name,
           value: `Keywords: **${alert.data.keywords}** | Interval: **${alert.data.interval} seconds**`
