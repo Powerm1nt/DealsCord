@@ -82,7 +82,7 @@ class AlertManager {
       // Cancel the job and delete the element from the array
       this.scheduler.stopById(name)
       this.scheduler.removeById(name)
-      this.alerts = this.alerts.filter(a => a !== alert)
+      this.alerts = this.alerts.filter(a => a === alert)
       await Alert.findOneAndRemove({ name })
     })
   }
