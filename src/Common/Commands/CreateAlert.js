@@ -1,6 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js')
-const vinted = require('@powerm1nt/vinted-api')
-const { VintedPost } = require('../Embeds/VintedCollections')
 const { getAlertManager } = require('../AlertManager')
 
 const createCommand = new SlashCommandBuilder()
@@ -84,7 +82,7 @@ module.exports = {
     }, interaction)
       .then(async (alert) => {
         await interaction.reply({
-          content: `ℹ️ L'alerte **${alert.name}** a été créé avec succès !`,
+          content: `ℹ️ L'alerte **${alert.name}** a été envoyé avec succès !`,
           ephemeral: true
         })
       })
