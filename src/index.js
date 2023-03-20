@@ -3,6 +3,7 @@ const chalk = require('chalk')
 const path = require('path')
 const fs = require('fs')
 const mongoose = require('mongoose')
+const { getAlertManager } = require('./Common/AlertManager')
 require('dotenv').config()
 
 const client = new Client({
@@ -50,10 +51,18 @@ client.on(Events.InteractionCreate, async interaction => {
 // Init the Database
 async function initDb () {
   await mongoose.connect(process.env.DB_URI)
+    .then(() => {
+      console.log(chalk.green.bold('Connected to the database!'))
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 }
 
 initDb().then(async () => {
-  await client.login(process.env.TOKEN)
+  await client.login(process.env.TOKEN).then(() => {
+    getAlertManager().syncAlerts({ client })
+  })
 })
 
 client.once(Events.ClientReady, () => {
