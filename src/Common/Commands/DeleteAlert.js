@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
+const { getAlertManager } = require('../AlertManager')
 
 const removeCommand = new SlashCommandBuilder()
   .setName('remove')
@@ -13,6 +14,13 @@ const removeCommand = new SlashCommandBuilder()
 module.exports = {
   data: removeCommand,
   async execute (interaction) {
-
+    return await getAlertManager().removeAlert(interaction.options.getString('name'))
+      .then(() => {
+        interaction.reply('✅ **Alerte supprimée avec succès !**')
+      })
+      .catch(async error => {
+        await interaction.reply({ content: `🛑 **${error.message}**`, ephemeral: true })
+        console.error(error)
+      })
   }
 }
