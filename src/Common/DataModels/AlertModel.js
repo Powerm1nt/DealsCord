@@ -1,6 +1,6 @@
 const { Schema } = require('mongoose')
 
-const Alert = new Schema({
+const AlertModel = new Schema({
   name: 'string',
   keywords: 'string',
   guildId: 'string',
@@ -18,4 +18,4 @@ const Alert = new Schema({
   }
 })
 
-module.exports = Alert
+module.exports = AlertModel
