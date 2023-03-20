@@ -34,6 +34,6 @@ const embed = {
 module.exports = {
   data: helpCommand,
   async execute (interaction) {
-    interaction.reply({ embeds: [embed] }, { ephemeral: true })
+    interaction.reply({ embeds: [embed], ephemeral: true })
   }
 }
