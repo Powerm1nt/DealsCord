@@ -16,7 +16,7 @@ module.exports = {
   async execute (interaction) {
     return await getAlertManager().removeAlert(interaction.options.getString('name'))
       .then(() => {
-        interaction.reply('✅ **Alerte supprimée avec succès !**')
+        interaction.reply('✅ **Alerte supprimée avec succès !**', { ephemeral: true })
       })
       .catch(async error => {
         await interaction.reply({ content: `🛑 **${error.message}**`, ephemeral: true })

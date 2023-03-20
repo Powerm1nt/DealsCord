@@ -2,7 +2,6 @@ const { EmbedBuilder } = require('discord.js')
 const { pagination, ButtonTypes, ButtonStyles } = require('@devraelfreeze/discordjs-pagination')
 
 function generateEmbed (post, interaction) {
-  console.log(post)
   const avatar = interaction && interaction.client.user.avatarURL()
   const rating = post.favourite_count
   const fullStars = 46

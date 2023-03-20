@@ -23,7 +23,7 @@ module.exports = {
         fields: alertList || [{ name: 'No alerts', value: 'No alerts found' }]
       }
 
-      interaction.reply({ embeds: [embed] })
+      interaction.reply({ embeds: [embed] }, { ephemeral: true })
     })
   }
 }
