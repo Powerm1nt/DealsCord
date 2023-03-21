@@ -1,0 +1,49 @@
+name: Deploy to ACR
+
+on:
+  create:
+    tags:
+      - '*'
+    workflow_dispatch:
+
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+      
+      - name: Login to ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: vintedbot.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      
+      - name: Build and tag Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: false
+          tags: vintedbot.azurecr.io/myapp:${{ github.ref }}
+      
+      - name: Push Docker image to ACR
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: vintedbot.azurecr.io/myapp:${{ github.ref }}
+      
+      - name: Deploy to Azure Web App for Containers
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: myapp
+          images: vintedbot.azurecr.io/myapp:${{ github.ref }}
+          resource-group: VintedBotNG
+          multi-container-config-file: docker-compose.yml
