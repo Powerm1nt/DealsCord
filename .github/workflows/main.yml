@@ -31,6 +31,12 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
       
+      - name: Set up environment variables
+        run: |
+          echo "TOKEN=${{ secrets.DISCORD_TOKEN }}" > .env
+          echo "CLIENT_ID=${{ secrets.DISCORD_CLIENTID }}" >> .env
+          echo "DB_URI=${{ secrets.MONGODB_URI }}" >> .env
+      
       - name: Build and tag Docker image
         uses: docker/build-push-action@v2
         with:
