@@ -43,7 +43,7 @@ jobs:
           tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/vintedbotapp:${{ github.ref_name }}
 
       - name: Deploy to Amazon ECS
-        uses: aws-actions/ecs-deploy@v1
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           cluster: my-ecs-cluster
           service: my-ecs-service
