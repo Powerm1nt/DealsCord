@@ -49,6 +49,7 @@ jobs:
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
+          task-definition: task-definition.json
           cluster: vintedbot_prod
           service: vintedbot
           image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/vintedbotapp:${{ github.ref_name }}
