@@ -31,6 +31,10 @@ jobs:
           echo "CLIENT_ID=${{ secrets.DISCORD_CLIENTID }}" >> .env
           echo "DB_URI=${{ secrets.MONGODB_URI }}" >> .env
 
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition --task-definition vintedbot --query taskDefinition > task-definition.json
+
       - name: Build and push Docker image
         uses: aws-actions/amazon-ecr-login@v1
         with:
@@ -40,7 +44,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/vintedbotapp:${{ github.ref_name }}
+          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/vintedbotapp:${{ github.sha }}
 
       - name: Deploy to Amazon ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
