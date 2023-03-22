@@ -44,6 +44,10 @@ jobs:
           context: .
           push: true
           tags: vintedbot.azurecr.io/vintedbotapp:${{ github.ref_name }}
+          build-args: |
+            TOKEN=${{ secrets.DISCORD_TOKEN }}
+            CLIENT_ID=${{ secrets.DISCORD_CLIENTID }}
+            DB_URI=${{ secrets.MONGODB_URI }}
       
       - name: Deploy to Azure Web App for Containers
         uses: azure/webapps-deploy@v2
