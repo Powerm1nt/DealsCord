@@ -1,6 +1,7 @@
 FROM node:16
 WORKDIR /usr/app/src
 
+COPY .env ./
 COPY ./src ./
 COPY package*.json ./
 
