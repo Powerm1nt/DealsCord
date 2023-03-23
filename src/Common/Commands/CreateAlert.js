@@ -33,11 +33,10 @@ const createCommand = new SlashCommandBuilder()
       .setName('filter')
       .setDescription('Filter to search for')
       .addChoices(
-        { name: 'Newest', value: 'newest' },
-        { name: 'Oldest', value: 'oldest' },
-        { name: 'Price: Low to High', value: 'price_asc' },
-        { name: 'Price: High to Low', value: 'price_desc' },
-        { name: 'Pertinence', value: 'pertinence' }
+        { name: 'Newest', value: 'newest_first' },
+        { name: 'Pertinence', value: 'pertinence' },
+        { name: 'Price: Low to High', value: 'price_low_to_high' },
+        { name: 'Price: High to Low', value: 'price_high_to_low' }
       )
   )
   .addNumberOption(option =>
@@ -47,8 +46,14 @@ const createCommand = new SlashCommandBuilder()
   )
   .addStringOption(option =>
     option
-      .setName('price')
-      .setDescription('Price to search for')
+      .setName('price-from')
+      .setDescription('Price to start searching for')
+      .setRequired(false)
+  )
+  .addStringOption(option =>
+    option
+      .setName('price-to')
+      .setDescription('Price to stop searching for')
       .setRequired(false)
   )
   .addStringOption(option =>
@@ -74,7 +79,8 @@ module.exports = {
       channelId: interaction.options.getChannel('channel').id,
       interval: interaction.options.getString('interval'),
       author: interaction.user.id,
-      price: interaction.options.getString('price'),
+      price_from: interaction.options.getString('price-from'),
+      price_to: interaction.options.getString('price-to'),
       size: interaction.options.getString('size'),
       reputation: interaction.options.getString('reputation'),
       page: interaction.options.getNumber('page'),
