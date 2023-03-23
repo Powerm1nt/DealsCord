@@ -18,14 +18,14 @@ class AlertManager {
       .then(async (data) => {
         for (const alert of data) {
           console.log(alert)
-          const priceFrom = data.price_from
-          const priceTo = data.price_to
-          const size = data.size
-          const reputation = data.reputation
-          const page = data.page
-          const order = data.order
+          const priceFrom = alert.price_from
+          const priceTo = alert.price_to
+          const size = alert.size
+          const reputation = alert.reputation
+          const page = alert.page
+          const order = alert.order
 
-          const searchUrl = `https://www.vinted.fr/vetements?search_text=${data.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${size ? `&size=${size}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`
+          const searchUrl = `https://www.vinted.fr/vetements?search_text=${alert.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${size ? `&size=${size}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`
 
           // Fetch the cookie and search for the posts
           vinted.fetchCookie().then((data) => {

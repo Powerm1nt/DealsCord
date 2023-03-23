@@ -12,7 +12,7 @@ const AlertModel = new Schema({
   size: 'string',
   reputation: 'number',
   page: 'number',
-  filter: 'string',
+  order: 'string',
   createdAt: {
     type: Date,
     default: Date.now
