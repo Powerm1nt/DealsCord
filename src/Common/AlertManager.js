@@ -57,11 +57,13 @@ class AlertManager {
           }, (err) => {
             console.log(err)
           })
-          if (!this.scheduler.existsById(`alert_${alert.name}`)) this.scheduler.addSimpleIntervalJob(new SimpleIntervalJob({ seconds: alert.interval }, task, { id: alert.name }))
+          if (!this.scheduler.existsById(alert.name)) this.scheduler.addSimpleIntervalJob(new SimpleIntervalJob({ seconds: alert.interval }, task, { id: alert.name }))
 
-          this.alerts.push({
-            name: alert.name, data: alert
-          })
+          if (!this.alerts.find(a => a.name === alert.name)) {
+            this.alerts.push({
+              name: alert.name, data: alert
+            })
+          }
         }
       })
   }
@@ -90,7 +92,14 @@ class AlertManager {
       // Cancel the job and delete the element from the array
       this.scheduler.stopById(name)
       this.scheduler.removeById(name)
-      this.alerts = this.alerts.filter(a => a === alert)
+
+      // Remove the alert in memory
+      this.alerts.forEach(a => {
+        if (a.name === name) {
+          this.alerts.splice(this.alerts.indexOf(a), 1)
+        }
+      })
+      // Remove the alert from the database
       await Alert.findOneAndRemove({ name })
     })
   }
