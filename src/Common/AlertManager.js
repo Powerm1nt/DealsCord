@@ -17,7 +17,15 @@ class AlertManager {
     return await Alert.find({})
       .then(async (data) => {
         for (const alert of data) {
-          const searchUrl = `https://www.vinted.fr/vetements?search_text=${alert.keywords}&price_from=${alert.price_from}&price_to=${alert.price_to}&size=${alert.size}&reputation=${alert.reputation}&order=${alert.filter}&page=${alert.page}`
+          console.log(alert)
+          const priceFrom = data.price_from
+          const priceTo = data.price_to
+          const size = data.size
+          const reputation = data.reputation
+          const page = data.page
+          const order = data.order
+
+          const searchUrl = `https://www.vinted.fr/vetements?search_text=${data.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${size ? `&size=${size}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`
 
           // Fetch the cookie and search for the posts
           vinted.fetchCookie().then((data) => {

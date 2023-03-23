@@ -57,7 +57,14 @@ module.exports = {
   async execute (interaction) {
     await vinted.fetchCookie()
       .then(async (data) => {
-        const searchUrl = `https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}&price_from=${interaction.options.getString('price-from')}&price_to=${interaction.options.getString('price-to')}&size=${interaction.options.getString('size')}&reputation=${interaction.options.getString('reputation')}&order=${interaction.options.getString('filter')}`
+        const priceFrom = interaction.options.getString('price-from')
+        const priceTo = interaction.options.getString('price-to')
+        const size = interaction.options.getString('size')
+        const reputation = interaction.options.getString('reputation')
+        const page = interaction.options.getString('page')
+        const order = interaction.options.getString('filter')
+
+        const searchUrl = `https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${size ? `&size=${size}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`
 
         await vinted.search(searchUrl).then(async (data) => {
           await new VintedPost().makePost(interaction, data.items)
