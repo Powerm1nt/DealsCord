@@ -1,4 +1,4 @@
-name: Deploy to ACR
+name: Deploy to ECR and ECS
 
 on:
   workflow_dispatch:
@@ -6,57 +6,58 @@ on:
     tags:
       - '*'
 
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '16.x'
-      
-      - name: 'Login via Azure CLI'
-        uses: azure/login@v1
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-      
-      - name: Login to ACR
-        uses: azure/docker-login@v1
-        with:
-          login-server: vintedbot.azurecr.io
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
-      
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+
       - name: Set up environment variables
         run: |
           echo "TOKEN=${{ secrets.DISCORD_TOKEN }}" > .env
           echo "CLIENT_ID=${{ secrets.DISCORD_CLIENTID }}" >> .env
           echo "DB_URI=${{ secrets.MONGODB_URI }}" >> .env
-      
-      - name: Build and tag Docker image
-        uses: docker/build-push-action@v2
+
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition --task-definition vintedbot --query taskDefinition > task-definition.json
+
+      - name: Build and push Docker image
+        uses: aws-actions/amazon-ecr-login@v1
         with:
-          context: .
-          push: false
-          tags: vintedbot.azurecr.io/vintedbotapp:${{ github.ref_name }}
-      
-      - name: Push Docker image to ACR
+          aws-region: us-west-2
+      - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: vintedbot.azurecr.io/vintedbotapp:${{ github.ref_name }}
-          build-args: |
-            TOKEN=${{ secrets.DISCORD_TOKEN }}
-            CLIENT_ID=${{ secrets.DISCORD_CLIENTID }}
-            DB_URI=${{ secrets.MONGODB_URI }}
-      
-      - name: Deploy to Azure Web App for Containers
-        uses: azure/webapps-deploy@v2
+          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/vintedbotapp:latest
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@97587c9d45a4930bf0e3da8dd2feb2a463cf4a3a
         with:
-          app-name: vintedbotapp
-          images: vintedbot.azurecr.io/vintedbotapp:${{ github.ref_name }}
+          task-definition: task-definition.json
+          container-name: vintedbot
+          image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/vintedbotapp:latest
+
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          cluster: vintedbot_prod
+          service: vintedbot
+          container-name: vintedbot
