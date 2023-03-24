@@ -42,7 +42,13 @@ jobs:
           tags: ${{ secrets.REGISTRY_USER }}/vintedbot:${{ github.sha }}
 
       - name: Deploy Docker image
-        run: |
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_DOMAIN }} -p ${{ secrets.VPS_PASSWORD }} "docker stop vintedbot || true"
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_DOMAIN }} -p ${{ secrets.VPS_PASSWORD }} "docker rm vintedbot || true"
-          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_DOMAIN }} -p ${{ secrets.VPS_PASSWORD }} "docker run -d --name vintedbot ${{ secrets.REGISTRY }}/vintedbot:${{ github.sha }}"
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.VPS_DOMAIN }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          script: |
+            docker stop vintedbot || true
+            docker rm vintedbot || true
+            docker run -d --name vintedbot ${{ secrets.REGISTRY_USER }}/vintedbot:${{ github.sha }}
