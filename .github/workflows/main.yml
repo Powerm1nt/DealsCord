@@ -1,29 +1,23 @@
-name: Deploy to ECR and ECS
+name: Application deployment
 
 on:
   workflow_dispatch:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16.x'
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
+          node-version: "18.x"
 
       - name: Set up environment variables
         run: |
@@ -31,33 +25,31 @@ jobs:
           echo "CLIENT_ID=${{ secrets.DISCORD_CLIENTID }}" >> .env
           echo "DB_URI=${{ secrets.MONGODB_URI }}" >> .env
 
-      - name: Download task definition
-        run: |
-          aws ecs describe-task-definition --task-definition vintedbot --query taskDefinition > task-definition.json
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-      - name: Build and push Docker image
-        uses: aws-actions/amazon-ecr-login@v1
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
         with:
-          aws-region: us-west-2
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           push: true
-          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/vintedbotapp:latest
+          tags: ${{ secrets.REGISTRY_USER }}/vintedbot:${{ github.sha }}
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@97587c9d45a4930bf0e3da8dd2feb2a463cf4a3a
+      - name: Deploy Docker image
+        uses: appleboy/ssh-action@v0.1.8
         with:
-          task-definition: task-definition.json
-          container-name: vintedbot
-          image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/vintedbotapp:latest
-
-      - name: Deploy to Amazon ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          cluster: vintedbot_prod
-          service: vintedbot
-          container-name: vintedbot
+          host: ${{ secrets.VPS_DOMAIN }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          script: |
+            docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PASSWORD }}
+            docker stop vintedbot || true
+            docker rm vintedbot || true
+            docker run -d --name vintedbot ${{ secrets.REGISTRY_USER }}/vintedbot:${{ github.sha }} 
