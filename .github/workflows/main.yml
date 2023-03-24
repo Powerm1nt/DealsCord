@@ -4,32 +4,39 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18.x'
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18.x"
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: true
-        tags: ${{ secrets.REGISTRY }}/vintedbot:${{ github.sha }}
-        username: ${{ secrets.REGISTRY_USER }}
-        password: ${{ secrets.REGISTRY_PASSWORD }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Deploy Docker image
-      run: |
-        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_DOMAIN }} -p ${{ secrets.VPS_PASSWORD }} "docker stop vintedbot || true"
-        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_DOMAIN }} -p ${{ secrets.VPS_PASSWORD }} "docker rm vintedbot || true"
-        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_DOMAIN }} -p ${{ secrets.VPS_PASSWORD }} "docker run -d --name vintedbot ${{ secrets.REGISTRY }}/vintedbot:${{ github.sha }}"
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.REGISTRY_USER }}/vintedbot:${{ github.sha }}
+
+      - name: Deploy Docker image
+        run: |
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_DOMAIN }} -p ${{ secrets.VPS_PASSWORD }} "docker stop vintedbot || true"
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_DOMAIN }} -p ${{ secrets.VPS_PASSWORD }} "docker rm vintedbot || true"
+          ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_DOMAIN }} -p ${{ secrets.VPS_PASSWORD }} "docker run -d --name vintedbot ${{ secrets.REGISTRY }}/vintedbot:${{ github.sha }}"
