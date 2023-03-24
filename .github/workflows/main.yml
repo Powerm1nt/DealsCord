@@ -1,63 +1,34 @@
-name: Deploy to ECR and ECS
+name: Application deployment
 
 on:
-  workflow_dispatch:
   push:
-    tags:
-      - '*'
+    branches:
+      - main
 
 jobs:
-  build-and-push:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16.x'
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18.x'
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-west-2
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.REGISTRY }}/vintedbot:${{ github.sha }}
+        username: ${{ secrets.REGISTRY_USER }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      - name: Set up environment variables
-        run: |
-          echo "TOKEN=${{ secrets.DISCORD_TOKEN }}" > .env
-          echo "CLIENT_ID=${{ secrets.DISCORD_CLIENTID }}" >> .env
-          echo "DB_URI=${{ secrets.MONGODB_URI }}" >> .env
-
-      - name: Download task definition
-        run: |
-          aws ecs describe-task-definition --task-definition vintedbot --query taskDefinition > task-definition.json
-
-      - name: Build and push Docker image
-        uses: aws-actions/amazon-ecr-login@v1
-        with:
-          aws-region: us-west-2
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/vintedbotapp:latest
-
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@97587c9d45a4930bf0e3da8dd2feb2a463cf4a3a
-        with:
-          task-definition: task-definition.json
-          container-name: vintedbot
-          image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-west-2.amazonaws.com/vintedbotapp:latest
-
-      - name: Deploy to Amazon ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          cluster: vintedbot_prod
-          service: vintedbot
-          container-name: vintedbot
+    - name: Deploy Docker image
+      run: |
+        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_DOMAIN }} -p ${{ secrets.VPS_PASSWORD }} "docker stop vintedbot || true"
+        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_DOMAIN }} -p ${{ secrets.VPS_PASSWORD }} "docker rm vintedbot || true"
+        ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_DOMAIN }} -p ${{ secrets.VPS_PASSWORD }} "docker run -d --name vintedbot ${{ secrets.REGISTRY }}/vintedbot:${{ github.sha }}"
