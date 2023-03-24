@@ -56,6 +56,7 @@ async function initDb () {
     })
     .catch((err) => {
       console.log(err)
+      process.exit(1)
     })
 }
 
@@ -64,7 +65,6 @@ initDb().then(async () => {
     getAlertManager().syncAlerts({ client })
   })
 })
-
 client.once(Events.ClientReady, () => {
   console.log(`Logged in as ${chalk.white.bold(client.user.tag)}!`)
 })
