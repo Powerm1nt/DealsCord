@@ -1,9 +1,10 @@
 name: Application deployment
 
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - main
+    tags:
+      - '*'
 
 jobs:
   build-and-deploy:
