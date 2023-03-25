@@ -10,7 +10,8 @@
     "dotenv": "^16.0.3",
     "mongoose": "^7.0.2",
     "parse-duration": "^1.0.3",
-    "toad-scheduler": "^2.2.0"
+    "toad-scheduler": "^2.2.0",
+    "uuid": "^9.0.0"
   },
   "scripts": {
     "start": "pm2 start .",
