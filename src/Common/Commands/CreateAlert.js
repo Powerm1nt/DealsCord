@@ -72,7 +72,10 @@ const createCommand = new SlashCommandBuilder()
 module.exports = {
   data: createCommand,
   async execute (interaction) {
-    if (interaction.options.getString('size').split(' ').length > 1) {
+    if (
+      interaction.options.getString('size') &&
+         interaction.options.getString('size').split(' ').length > 1
+    ) {
       return interaction.reply({
         content: '🛑 **Vous ne pouvez mettre qu\'une seule taille, essayez de créer une autre alerte.**',
         ephemeral: true

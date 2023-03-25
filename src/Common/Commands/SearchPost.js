@@ -55,6 +55,16 @@ const searchCommand = new SlashCommandBuilder()
 module.exports = {
   data: searchCommand,
   async execute (interaction) {
+    if (
+      interaction.options.getString('size') &&
+         interaction.options.getString('size').split(' ').length > 1
+    ) {
+      return interaction.reply({
+        content: '🛑 **Vous ne pouvez mettre qu\'une seule taille, essayez de créer une autre alerte.**',
+        ephemeral: true
+      })
+    }
+
     await vinted.fetchCookie()
       .then(async (data) => {
         const priceFrom = interaction.options.getString('price-from')
@@ -69,6 +79,12 @@ module.exports = {
         await vinted.search(searchUrl).then(async (data) => {
           await new VintedPost().makePost(interaction, data.items)
         })
+          .catch((err) => {
+            throw err
+          })
+      })
+      .catch((err) => {
+        console.log('Err on SearchPost ' + err)
       })
   }
 }
