@@ -27,6 +27,8 @@ class AlertManager {
 
           const searchUrl = `https://www.vinted.fr/vetements?search_text=${alert.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${size ? `&size=${size}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`
 
+          console.log(searchUrl)
+
           // Fetch the cookie and search for the posts
           vinted.fetchCookie().then((data) => {
             vinted.search(searchUrl).then((data) => {
@@ -40,15 +42,23 @@ class AlertManager {
               .then(async (data) => {
                 await vinted.search(searchUrl).then(async (data) => {
                   interaction.client.channels.fetch(alert.channelId).then(async (channel) => {
-                    for (const item of data.items) {
-                      //  Check if the post is already in the cache
-                      if (!alert.cache.find(c => c.id === item.id)) {
-                        //  If not, send the embed and add it to the cache
-                        await channel.send({
-                          content: '✨ **Nouveau Post trouvé !**', embeds: [generateEmbed(item, null)]
-                        })
+                    if (!channel) {
+                      console.log('Channel not found, removing alert...')
+                      await this.removeAlert(alert.name)
+                      return
+                    }
 
-                        alert.cache.push(item)
+                    if (alert.items.length !== 0) {
+                      for (const item of data.items) {
+                        //  Check if the post is already in the cache
+                        if (!alert.cache.find(c => c.id === item.id)) {
+                          //  If not, send the embed and add it to the cache
+                          await channel.send({
+                            content: '✨ **Nouveau Post trouvé !**', embeds: [generateEmbed(item, null)]
+                          })
+
+                          alert.cache.push(item)
+                        }
                       }
                     }
                   })
