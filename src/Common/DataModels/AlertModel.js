@@ -2,6 +2,7 @@ const { Schema } = require('mongoose')
 
 const AlertModel = new Schema({
   name: 'string',
+  id: 'string',
   keywords: 'string',
   guildId: 'string',
   channelId: 'string',

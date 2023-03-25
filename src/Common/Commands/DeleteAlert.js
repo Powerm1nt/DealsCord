@@ -14,7 +14,7 @@ const removeCommand = new SlashCommandBuilder()
 module.exports = {
   data: removeCommand,
   async execute (interaction) {
-    return await getAlertManager().removeAlert(interaction.options.getString('name'))
+    return await getAlertManager().removeAlert(interaction.options.getString('name'), interaction.guildId)
       .then(() => {
         interaction.reply({ content: '✅ **Alerte supprimée avec succès !**', ephemeral: true })
       })
