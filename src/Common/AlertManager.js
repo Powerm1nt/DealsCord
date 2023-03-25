@@ -49,7 +49,7 @@ class AlertManager {
                       return
                     }
 
-                    if (alert.items.length !== 0) {
+                    if (data.items.length !== 0) {
                       for (const item of data.items) {
                         //  Check if the post is already in the cache
                         if (!alert.cache.find(c => c.id === item.id)) {
