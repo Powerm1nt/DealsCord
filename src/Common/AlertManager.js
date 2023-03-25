@@ -5,6 +5,7 @@ const { generateEmbed } = require('./Embeds/VintedCollections')
 const { ToadScheduler, SimpleIntervalJob, AsyncTask } = require('toad-scheduler')
 const mongoose = require('mongoose')
 const Alert = mongoose.model('Alert', AlertModel)
+const { v4: uuidv4 } = require('uuid')
 
 class AlertManager {
   scheduler = new ToadScheduler()
@@ -36,7 +37,7 @@ class AlertManager {
             })
           })
 
-          const task = new AsyncTask(`alert_${alert.name}`, async () => {
+          const task = new AsyncTask(alert.id, async () => {
             console.log('Checking for new posts...')
             await vinted.fetchCookie()
               .then(async (data) => {
@@ -70,11 +71,11 @@ class AlertManager {
           }, (err) => {
             console.log(err)
           })
-          if (!this.scheduler.existsById(alert.name)) this.scheduler.addSimpleIntervalJob(new SimpleIntervalJob({ seconds: alert.interval }, task, { id: alert.name }))
+          if (!this.scheduler.existsById(alert.id)) this.scheduler.addSimpleIntervalJob(new SimpleIntervalJob({ seconds: alert.interval }, task, { id: alert.id }))
 
-          if (!this.alerts.find(a => a.name === alert.name)) {
+          if (!this.alerts.find(a => a.id === alert.id)) {
             this.alerts.push({
-              name: alert.name, data: alert
+              name: alert.name, id: alert.id, data: alert
             })
           }
         }
@@ -82,15 +83,20 @@ class AlertManager {
   }
 
   async addAlert (alert, interaction) {
+    alert.id = uuidv4().split('-')[0]
+    if (!alert.name) throw new Error('Name is required')
+    if (!alert.id) throw new Error('ID is required')
+
     const _date = parse(alert.interval.toString(), 'second')
     if (!_date || _date < 60) throw new Error('Interval must be at least 1 minute, format example: 1h 30m 10s')
     alert.interval = _date
     // check if the alert already exists on the database
-    await Alert.findOne({ name: alert.name }).then(async (data) => {
+    await Alert.findOne({ id: alert.id }).then(async (data) => {
       if (data) throw new Error('Alert already exists')
     })
 
     return await Alert.create(alert).then(async () => {
+      console.log('Alert created successfully ' + alert.name + ' ' + alert.id)
       this.syncAlerts(interaction).then(() => {
         interaction.channel.send(`<@${interaction.user.id}> ✅ **Alerte créée avec succès !**`)
       })
@@ -99,21 +105,24 @@ class AlertManager {
     })
   }
 
-  async removeAlert (name) {
-    return await Alert.findOne({ where: { name } }).then(async alert => {
-      if (!this.alerts.find(a => a.name === name)) throw new Error('Alert does not exist')
+  async removeAlert (name, guildId) {
+    if (!name) throw new Error('Name is required')
+    if (!guildId) throw new Error('Guild ID is required')
+
+    return await Alert.findOne({ name, guildId }).then(async alert => {
+      if (!this.alerts.find(a => a.id === alert.id)) throw new Error('Alert does not exist')
       // Cancel the job and delete the element from the array
-      this.scheduler.stopById(name)
-      this.scheduler.removeById(name)
+      this.scheduler.stopById(alert.id)
+      this.scheduler.removeById(alert.id)
 
       // Remove the alert in memory
       this.alerts.forEach(a => {
-        if (a.name === name) {
+        if (a.id === alert.id) {
           this.alerts.splice(this.alerts.indexOf(a), 1)
         }
       })
       // Remove the alert from the database
-      await Alert.findOneAndRemove({ name })
+      await Alert.findOneAndRemove({ id: alert.id })
     })
   }
 
