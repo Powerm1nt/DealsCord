@@ -8,9 +8,11 @@ const listCommand = new SlashCommandBuilder()
 module.exports = {
   data: listCommand,
   async execute (interaction) {
-    return await getAlertManager().getAlerts().then(alerts => {
+    return await getAlertManager().getAlerts(interaction.guildId).then(alerts => {
       // Display a list of alerts
+
       const alertList = alerts.map(alert => {
+        if (alert.data.guildId !== interaction.guildId) return {}
         return {
           name: alert.name,
           value: `Keywords: **${alert.data.keywords}** | Interval: **${alert.data.interval} seconds**`

@@ -55,6 +55,9 @@ class AlertManager {
                           //  If not, send the embed and add it to the cache
                           await channel.send({
                             content: '✨ **Nouveau Post trouvé !**', embeds: [generateEmbed(item, null)]
+                          }).catch((err) => {
+                            console.log(err.status)
+                            console.log(err)
                           })
 
                           alert.cache.push(item)
@@ -114,8 +117,14 @@ class AlertManager {
     })
   }
 
-  async getAlerts () {
-    return this.alerts
+  async getAlerts (guildId) {
+    const _alerts = []
+
+    this.alerts.forEach(a => {
+      if (guildId === a.data.guildId) _alerts.push(a.data)
+    })
+
+    return _alerts
   }
 }
 
