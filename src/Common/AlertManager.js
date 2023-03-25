@@ -27,7 +27,6 @@ class AlertManager {
           const order = alert.order
 
           const searchUrl = `https://www.vinted.fr/vetements?search_text=${alert.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${size ? `&size=${size}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`
-
           console.log(searchUrl)
 
           // Fetch the cookie and search for the posts
