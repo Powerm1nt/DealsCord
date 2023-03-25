@@ -1,6 +1,6 @@
 {
   "name": "vinted-bot",
-  "version": "1.5.13",
+  "version": "1.6.15",
   "main": "src/index.js",
   "dependencies": {
     "@devraelfreeze/discordjs-pagination": "^2.7.2",
