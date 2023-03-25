@@ -40,12 +40,12 @@ class AlertManager {
           const task = new AsyncTask(alert.id, async () => {
             console.log('Checking for new posts...')
             await vinted.fetchCookie()
-              .then(async (data) => {
+              .then(async () => {
                 await vinted.search(searchUrl).then(async (data) => {
                   interaction.client.channels.fetch(alert.channelId).then(async (channel) => {
                     if (!channel) {
                       console.log('Channel not found, removing alert...')
-                      await this.removeAlert(alert.name)
+                      await this.removeAlert(alert.id, interaction.guildId)
                       return
                     }
 
