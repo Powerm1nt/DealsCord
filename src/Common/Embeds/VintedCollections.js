@@ -80,8 +80,6 @@ function generateEmbed (post, interaction) {
 
 class VintedCollections {
   async makePost (interaction, posts) {
-    this.interaction = interaction
-    this.posts = posts
     this.arrayEmbeds = []
 
     posts.forEach((post, index) => {
