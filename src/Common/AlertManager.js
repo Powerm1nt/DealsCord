@@ -91,7 +91,7 @@ class AlertManager {
     if (!_date || _date < 60) throw new Error('Interval must be at least 1 minute, format example: 1h 30m 10s')
     alert.interval = _date
     // check if the alert already exists on the database
-    await Alert.findOne({ id: alert.id }).then(async (data) => {
+    await Alert.findOne({ name: alert.name, guildId: interaction.guildId }).then(async (data) => {
       if (data) throw new Error('Alert already exists')
     })
 
@@ -110,7 +110,7 @@ class AlertManager {
     if (!guildId) throw new Error('Guild ID is required')
 
     return await Alert.findOne({ name, guildId }).then(async alert => {
-      if (!this.alerts.find(a => a.id === alert.id)) throw new Error('Alert does not exist')
+      if (!alert || !this.alerts.find(a => a.id === alert.id)) throw new Error('Alert does not exist')
       // Cancel the job and delete the element from the array
       this.scheduler.stopById(alert.id)
       this.scheduler.removeById(alert.id)
