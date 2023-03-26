@@ -42,7 +42,7 @@ const searchCommand = new SlashCommandBuilder()
   .addStringOption(option =>
     option
       .setName('size')
-      .setDescription('Size to search for')
+      .setDescription('Size to search for (separate with space or semicolon)')
       .setRequired(false)
   )
   .addStringOption(option =>
@@ -55,16 +55,6 @@ const searchCommand = new SlashCommandBuilder()
 module.exports = {
   data: searchCommand,
   async execute (interaction) {
-    if (
-      interaction.options.getString('size') &&
-         interaction.options.getString('size').split(' ').length > 1
-    ) {
-      return interaction.reply({
-        content: '🛑 **Vous ne pouvez mettre qu\'une seule taille, essayez de créer une autre alerte.**',
-        ephemeral: true
-      })
-    }
-
     await vinted.fetchCookie()
       .then(async (data) => {
         const priceFrom = interaction.options.getString('price-from')
@@ -74,8 +64,25 @@ module.exports = {
         const page = interaction.options.getString('page')
         const order = interaction.options.getString('filter')
 
-        const searchUrl = new URL(`https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${size ? `&size=${size}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`)
+        // TODO DUPLICATE CODE
+        const sizeArray = String(size).split(/[ ;,]+/)
+        let url = `https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`
 
+        sizeArray.forEach((size, index) => {
+          if (sizeArray.length >= 1 && size !== 'null') {
+            // add '&' character to separate query parameters
+            if (url.split('?').length - 1) {
+              url += '&'
+            } else {
+              url += '?'
+            }
+
+            url += `size=${size}`
+          }
+        })
+
+        const searchUrl = new URL(url)
+        console.log(searchUrl.href)
         await vinted.search(searchUrl).then(async (data) => {
           await new VintedPost().makePost(interaction, data.items)
         })

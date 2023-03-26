@@ -59,7 +59,7 @@ const createCommand = new SlashCommandBuilder()
   .addStringOption(option =>
     option
       .setName('size')
-      .setDescription('Size to search for')
+      .setDescription('Size to search for (separate with space or semicolon)')
       .setRequired(false)
   )
   .addStringOption(option =>
@@ -72,16 +72,6 @@ const createCommand = new SlashCommandBuilder()
 module.exports = {
   data: createCommand,
   async execute (interaction) {
-    if (
-      interaction.options.getString('size') &&
-         interaction.options.getString('size').split(' ').length > 1
-    ) {
-      return interaction.reply({
-        content: '🛑 **Vous ne pouvez mettre qu\'une seule taille, essayez de créer une autre alerte.**',
-        ephemeral: true
-      })
-    }
-
     await getAlertManager().addAlert({
       name: interaction.options.getString('name'),
       keywords: interaction.options.getString('keywords'),
