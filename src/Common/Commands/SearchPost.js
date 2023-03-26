@@ -74,7 +74,7 @@ module.exports = {
         const page = interaction.options.getString('page')
         const order = interaction.options.getString('filter')
 
-        const searchUrl = `https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${size ? `&size=${size}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`
+        const searchUrl = new URL(`https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${size ? `&size=${size}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`)
 
         await vinted.search(searchUrl).then(async (data) => {
           await new VintedPost().makePost(interaction, data.items)

@@ -26,8 +26,8 @@ class AlertManager {
           const page = alert.page
           const order = alert.order
 
-          const searchUrl = `https://www.vinted.fr/vetements?search_text=${alert.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${size ? `&size=${size}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`
-          console.log(searchUrl)
+          const searchUrl = new URL(`https://www.vinted.fr/vetements?search_text=${alert.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${size ? `&size=${size}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`)
+          console.log(searchUrl.href)
 
           // Fetch the cookie and search for the posts
           vinted.fetchCookie().then((data) => {
