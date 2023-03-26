@@ -69,21 +69,15 @@ class AlertManager {
               .then(async () => {
                 await vinted.search(searchUrl).then(async (data) => {
                   interaction.client.channels.fetch(alert.channelId).then(async (channel) => {
-                    if (!channel) {
-                      console.log('Channel not found, removing alert...')
-                      await this.removeAlert(alert.id, interaction.guildId)
-                      return
-                    }
-
                     if (data && data.items && data.items.length > 0) {
                       for (const item of data.items) {
                         //  Check if the post is already in the cache
                         if (!alert.cache.find(c => c.id === item.id)) {
                           //  If not, send the embed and add it to the cache
+                          console.log('New post found, sending it to the channel... ' + item.id + ' ' + item.title)
                           await channel.send({
                             content: '✨ **Nouveau Post trouvé !**', embeds: [generateEmbed(item, null)]
                           }).catch((err) => {
-                            console.log(err.status)
                             console.log(err)
                           })
 
@@ -91,14 +85,15 @@ class AlertManager {
                         }
                       }
                     }
+                  }).catch((err) => {
+                    console.log('Channel not found, removing alert...')
+                    console.log(alert)
+                    if (err.status === 403) this.removeAlert(alert.name, alert.guildId)
                   })
                 })
               })
           }, (err) => {
             console.log(err)
-            console.log('Channel not found, removing alert...')
-            console.log(err.status)
-            // this.removeAlert(alert.id, interaction.guildId)
           })
           if (!this.scheduler.existsById(alert.id)) this.scheduler.addSimpleIntervalJob(new SimpleIntervalJob({ seconds: alert.interval }, task, { id: alert.id }))
 
