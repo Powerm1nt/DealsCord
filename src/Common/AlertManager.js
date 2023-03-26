@@ -38,7 +38,23 @@ class AlertManager {
           const page = alert.page
           const order = alert.order
 
-          const searchUrl = new URL(`https://www.vinted.fr/vetements?search_text=${alert.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${size ? `&size=${size}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`)
+          const sizeArray = String(size).split(/[ ;,]+/)
+          let url = `https://www.vinted.fr/vetements?search_text=${alert.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`
+
+          sizeArray.forEach((size, index) => {
+            if (sizeArray.length >= 1 && size !== 'null') {
+              // add '&' character to separate query parameters
+              if (url.split('?').length - 1) {
+                url += '&'
+              } else {
+                url += '?'
+              }
+
+              url += `size=${size}`
+            }
+          })
+
+          const searchUrl = new URL(url)
           console.log(searchUrl.href)
 
           // Fetch the cookie and search for the posts
@@ -95,6 +111,8 @@ class AlertManager {
 
   async addAlert (alert, interaction) {
     alert.id = uuidv4().split('-')[0]
+    // Make the size an array
+    alert.size = String(alert.size).split(/[ ;,]+/)
     if (!alert.name) throw new Error('Name is required')
     if (!alert.id) throw new Error('ID is required')
 
