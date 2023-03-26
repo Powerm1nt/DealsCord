@@ -3,8 +3,8 @@ name: Application deployment
 on:
   workflow_dispatch:
   push:
-    tags:
-      - "*"
+    branches:
+      - "prod"
 
 jobs:
   build-and-deploy:
