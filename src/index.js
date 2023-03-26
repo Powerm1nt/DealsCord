@@ -64,8 +64,8 @@ async function initDb () {
 initDb().then(async () => {
   await client.login(process.env.TOKEN).then(() => {
     client.user.setPresence({
-      activities: [{ name: 'Version: ' + version, type: ActivityType.Online }],
-      status: 'dnd'
+      activities: [{ name: 'Version: ' + version, type: ActivityType.Playing }],
+      status: 'online'
     })
     getAlertManager().syncAlerts({ client })
   })
