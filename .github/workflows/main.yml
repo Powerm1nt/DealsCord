@@ -50,6 +50,7 @@ jobs:
           port: 22
           script: |
             docker login -u ${{ secrets.REGISTRY_USER }} -p ${{ secrets.REGISTRY_PASSWORD }}
+            docker pull ${{ secrets.REGISTRY_USER }}/vintedbot:${{ github.sha }}
             docker stop vintedbot || true
             docker rm vintedbot || true
             docker run -d --name vintedbot ${{ secrets.REGISTRY_USER }}/vintedbot:${{ github.sha }} 
