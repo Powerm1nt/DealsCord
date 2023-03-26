@@ -96,6 +96,9 @@ class AlertManager {
               })
           }, (err) => {
             console.log(err)
+            console.log('Channel not found, removing alert...')
+            console.log(err.status)
+            // this.removeAlert(alert.id, interaction.guildId)
           })
           if (!this.scheduler.existsById(alert.id)) this.scheduler.addSimpleIntervalJob(new SimpleIntervalJob({ seconds: alert.interval }, task, { id: alert.id }))
 
