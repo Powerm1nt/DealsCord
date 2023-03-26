@@ -2,7 +2,7 @@ const AlertModel = require('./DataModels/AlertModel')
 const parse = require('parse-duration')
 const vinted = require('@powerm1nt/vinted-api')
 const { generateEmbed } = require('./Embeds/VintedCollections')
-const { ToadScheduler, SimpleIntervalJob, AsyncTask } = require('toad-scheduler')
+const { ToadScheduler, SimpleIntervalJob, AsyncTask, Task } = require('toad-scheduler')
 const mongoose = require('mongoose')
 const Alert = mongoose.model('Alert', AlertModel)
 const { v4: uuidv4 } = require('uuid')
@@ -11,7 +11,19 @@ class AlertManager {
   scheduler = new ToadScheduler()
 
   constructor () {
+    this._clearCookieId = uuidv4().split('-')[0]
     this.alerts = []
+
+    const clearCookiesTask = new Task(this._clearCookieId,
+      () => {
+        console.log('Clearing Cookies Task Started')
+        vinted.clearCookies()
+      }, err => {
+        console.error(err)
+      })
+
+    const job = new SimpleIntervalJob({ seconds: 30 * 60 }, clearCookiesTask)
+    this.scheduler.addSimpleIntervalJob(job)
   }
 
   async syncAlerts (interaction) {
