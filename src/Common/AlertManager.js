@@ -38,11 +38,10 @@ class AlertManager {
           const page = alert.page
           const order = alert.order
 
-          const sizeArray = String(size).split(/[ ;,]+/)
           let url = `https://www.vinted.fr/vetements?search_text=${alert.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}`
 
-          sizeArray.forEach((size, index) => {
-            if (sizeArray.length >= 1 && size !== 'null') {
+          size && size.forEach((_size, index) => {
+            if (size.length >= 1 && _size !== 'null') {
               // add '&' character to separate query parameters
               if (url.split('?').length - 1) {
                 url += '&'
@@ -50,7 +49,7 @@ class AlertManager {
                 url += '?'
               }
 
-              url += `size=${size}`
+              url += `size=${_size}`
             }
           })
 
