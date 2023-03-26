@@ -1,8 +1,9 @@
-const { Client, GatewayIntentBits, Events, Collection } = require('discord.js')
+const { Client, GatewayIntentBits, Events, Collection, ActivityType } = require('discord.js')
 const chalk = require('chalk')
 const path = require('path')
 const fs = require('fs')
 const mongoose = require('mongoose')
+const { version } = require('../package.json')
 const { getAlertManager } = require('./Common/AlertManager')
 require('dotenv').config()
 
@@ -62,6 +63,10 @@ async function initDb () {
 
 initDb().then(async () => {
   await client.login(process.env.TOKEN).then(() => {
+    client.user.setPresence({
+      activities: [{ name: 'Version: ' + version, type: ActivityType.Online }],
+      status: 'dnd'
+    })
     getAlertManager().syncAlerts({ client })
   })
 })
