@@ -10,7 +10,7 @@ const AlertModel = new Schema({
   interval: 'number',
   price_from: 'number',
   price_to: 'number',
-  size: 'string',
+  size: 'array',
   reputation: 'number',
   page: 'number',
   order: 'string',
