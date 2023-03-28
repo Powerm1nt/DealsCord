@@ -79,7 +79,7 @@ class AlertManager {
                           await channel.send({
                             content: '✨ **Nouveau Post trouvé !**', embeds: [generateEmbed(item, null)]
                           }).catch((err) => {
-                            console.log(err)
+                            throw err
                           })
 
                           alert.cache.push(item)
@@ -90,13 +90,14 @@ class AlertManager {
                     if (err.status === 403) {
                       console.log('Channel not found, removing alert...')
                       console.log(alert)
-                      this.removeAlert(alert.name, alert.guildId).then(() => {
-                        const user = client.users.cache.get(interaction.member.user.id)
-                        user.send('⚠️ **Une erreur est survenue lors de la vérification des alertes, veuillez vérifier que le bot a bien les permissions nécessaires dans le salon où vous avez créé l\'alerte.**').catch((err) => {
-                          console.error('Failed to send message to user')
-                          console.error(err)
+                      this.removeAlert(alert.name, alert.guildId)
+                        .then(() => {
+                          interaction.user.send(`⚠️ Une erreur est survenue lors de la vérification des alertes **(alerte ${alert.name} dans l'un de vos serveurs)**, \nveuillez vérifier que le bot a bien les permissions nécessaires dans le salon où vous avez créé l'alerte.`)
+                            .catch(err => console.error('Failed to send message to user ' + err))
                         })
-                      })
+                        .catch((err) => {
+                          console.log(err)
+                        })
                     }
                   })
                 })
