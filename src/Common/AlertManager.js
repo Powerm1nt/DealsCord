@@ -92,7 +92,7 @@ class AlertManager {
                       console.log(alert)
                       this.removeAlert(alert.name, alert.guildId)
                         .then(() => {
-                          interaction.user.send(`⚠️ Une erreur est survenue lors de la vérification des alertes **(alerte ${alert.name} dans l'un de vos serveurs)**, \nveuillez vérifier que le bot a bien les permissions nécessaires dans le salon où vous avez créé l'alerte.`)
+                          interaction.user.send(`⚠️ Une erreur est survenue lors de la vérification des alertes **(alerte ${alert.name} dans l'un de vos serveurs)**, \nveuillez vérifier que le bot a bien les permissions nécessaires dans le salon où vous avez créé l'alerte.\n\nVeuillez noter que l'alerte se supprime automatiquement si cette erreur se produit.`)
                             .catch(err => console.error('Failed to send message to user ' + err))
                         })
                         .catch((err) => {
