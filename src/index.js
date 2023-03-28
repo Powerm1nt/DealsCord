@@ -6,6 +6,14 @@ const mongoose = require('mongoose')
 const { version } = require('../package.json')
 const { getAlertManager } = require('./Common/AlertManager')
 require('dotenv').config()
+const Sentry = require('@sentry/node')
+
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    tracesSampleRate: 1.0
+  })
+}
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages]
