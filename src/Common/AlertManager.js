@@ -6,6 +6,7 @@ const { ToadScheduler, SimpleIntervalJob, AsyncTask, Task } = require('toad-sche
 const mongoose = require('mongoose')
 const Alert = mongoose.model('Alert', AlertModel)
 const { v4: uuidv4 } = require('uuid')
+const client = require('../index')
 
 class AlertManager {
   scheduler = new ToadScheduler()
@@ -86,9 +87,17 @@ class AlertManager {
                       }
                     }
                   }).catch((err) => {
-                    console.log('Channel not found, removing alert...')
-                    console.log(alert)
-                    if (err.status === 403) this.removeAlert(alert.name, alert.guildId)
+                    if (err.status === 403) {
+                      console.log('Channel not found, removing alert...')
+                      console.log(alert)
+                      this.removeAlert(alert.name, alert.guildId).then(() => {
+                        const user = client.users.cache.get(interaction.member.user.id)
+                        user.send('⚠️ **Une erreur est survenue lors de la vérification des alertes, veuillez vérifier que le bot a bien les permissions nécessaires dans le salon où vous avez créé l\'alerte.**').catch((err) => {
+                          console.error('Failed to send message to user')
+                          console.error(err)
+                        })
+                      })
+                    }
                   })
                 })
               })
@@ -109,7 +118,7 @@ class AlertManager {
   async addAlert (alert, interaction) {
     alert.id = uuidv4().split('-')[0]
     // Make the size an array
-    alert.size = String(alert.size).split(/[ ;,]+/)
+    alert.size = alert.size !== null ? String(alert.size).split(/[ ;,]+/) : []
     if (!alert.name) throw new Error('Name is required')
     if (!alert.id) throw new Error('ID is required')
 
