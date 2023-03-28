@@ -73,3 +73,6 @@ initDb().then(async () => {
 client.once(Events.ClientReady, () => {
   console.log(`Logged in as ${chalk.white.bold(client.user.tag)}!`)
 })
+
+// Export the client
+module.exports = client
