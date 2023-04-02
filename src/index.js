@@ -36,7 +36,7 @@ for (const file of commandFiles) {
 }
 
 client.on(Events.InteractionCreate, async interaction => {
-  if (!interaction.isChatInputCommand()) {
+  if (interaction.isChatInputCommand()) {
     const command = interaction.client.commands.get(interaction.commandName)
 
     if (!command) {
@@ -99,6 +99,3 @@ initDb().then(async () => {
 client.once(Events.ClientReady, () => {
   console.log(`Logged in as ${chalk.white.bold(client.user.tag)}!`)
 })
-
-// Export the client
-module.exports = client

@@ -6,7 +6,6 @@ const { ToadScheduler, SimpleIntervalJob, AsyncTask, Task } = require('toad-sche
 const mongoose = require('mongoose')
 const Alert = mongoose.model('Alert', AlertModel)
 const { v4: uuidv4 } = require('uuid')
-const client = require('../index')
 
 class AlertManager {
   scheduler = new ToadScheduler()
