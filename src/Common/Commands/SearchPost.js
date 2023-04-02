@@ -13,6 +13,13 @@ const searchCommand = new SlashCommandBuilder()
   )
   .addStringOption(option =>
     option
+      .setName('brand')
+      .setDescription('Brand to search for')
+      .setRequired(false)
+      .setAutocomplete(true)
+  )
+  .addStringOption(option =>
+    option
       .setName('filter')
       .setDescription('Filter to search for')
       .addChoices(
@@ -91,6 +98,24 @@ module.exports = {
       })
       .catch((err) => {
         console.log('Err on SearchPost ' + err)
+      })
+  },
+  async autocomplete (interaction) {
+    await vinted.fetchCookie()
+      .then(async () => {
+        await vinted.fetchBrands(interaction.options.getString('brand')).then(async (data) => {
+          await interaction.respond(data.brands.map((option) => ({
+            name: option.title,
+            value: option.id.toString()
+          })))
+        })
+      })
+      .catch((err) => {
+        throw err
+      })
+
+      .catch((err) => {
+        console.error('Err on SearchPost ' + err)
       })
   }
 }
