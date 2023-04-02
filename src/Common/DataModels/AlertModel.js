@@ -11,7 +11,7 @@ const AlertModel = new Schema({
   price_from: 'number',
   price_to: 'number',
   size: 'array',
-  brand_id: 'string',
+  brand_id: 'number',
   reputation: 'number',
   page: 'number',
   order: 'string',
