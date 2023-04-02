@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 const { version } = require('../package.json')
 const { getAlertManager } = require('./Common/AlertManager')
 require('dotenv').config()
-require('../deploy-commands').deployCommands() // Auto Refresh Commands
+require('./deploy-commands').deployCommands() // Auto Refresh Commands
 const Sentry = require('@sentry/node')
 
 if (process.env.SENTRY_DSN) {
