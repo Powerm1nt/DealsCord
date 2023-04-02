@@ -72,7 +72,7 @@ module.exports = {
       reputation: interaction.options.getString('reputation'),
       page: interaction.options.getNumber('page'),
       order: interaction.options.getString('filter'),
-      brand: interaction.options.getString('brand')
+      brand_id: interaction.options.getString('brand')
     }, interaction)
       .then(async (alert) => {
         await interaction.reply({

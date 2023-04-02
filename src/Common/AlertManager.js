@@ -38,7 +38,7 @@ class AlertManager {
           const reputation = alert.reputation
           const page = alert.page
           const order = alert.order
-          const brand = alert.brand
+          const brand = alert.brand_id
 
           let url = `https://www.vinted.fr/vetements?search_text=${alert.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}${brand ? `&brand_id[]=${brand}` : ''}`
 

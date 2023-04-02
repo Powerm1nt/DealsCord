@@ -67,7 +67,7 @@ module.exports = {
       const reputation = interaction.options.getString('reputation') !== undefined ? interaction.options.getString('reputation') : alert.reputation
       const page = interaction.options.getNumber('page') !== undefined ? interaction.options.getNumber('page') : alert.page
       const order = interaction.options.getString('filter') !== undefined ? interaction.options.getString('filter') : alert.order
-      const brand = interaction.options.getString('brand') !== undefined ? interaction.options.getString('brand') : alert.brand
+      const brand_id = interaction.options.getString('brand') !== undefined ? interaction.options.getString('brand') : alert.brand
 
       await getAlertManager().editAlert({
         name,
@@ -82,7 +82,7 @@ module.exports = {
         reputation,
         page,
         order,
-        brand
+        brand_id
       }, interaction)
         .then(data => {
           interaction.reply({
