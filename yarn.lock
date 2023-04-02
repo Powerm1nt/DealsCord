@@ -728,10 +728,10 @@
   dependencies:
     debug "^4.3.1"
 
-"@powerm1nt/vinted-api@^2.12.10":
-  version "2.12.10"
-  resolved "https://registry.npmjs.org/@powerm1nt/vinted-api/-/vinted-api-2.12.10.tgz#d8d489e7e0826d61901f7aefcfcc5a97a35a4733"
-  integrity sha512-1u80ImBC6q0Gsqr5gYJvAUAsQC3BVKldmD6HM3ba8Zs5nDkkfLBopEC45mZN9BFMRc05SAz2cfoJokEll4bfiQ==
+"@powerm1nt/vinted-api@^2.13.11":
+  version "2.13.11"
+  resolved "https://registry.npmjs.org/@powerm1nt/vinted-api/-/vinted-api-2.13.11.tgz#4c6528c2c347950ed90081146263b2f2268dafa1"
+  integrity sha512-4yryv+LSsKHdC5pD7Iel3vMc2NMWxKC4XAexjC0v5l/oemHojx/eZ+FHzaw/Oxblqesp+jwSASZF+Ig2PbWLgA==
   dependencies:
     cookie "^0.4.1"
     https-proxy-agent "^5.0.0"

@@ -1,11 +1,11 @@
 {
   "name": "vinted-bot",
-  "version": "1.17.56",
+  "version": "1.17.58",
   "private": true,
   "main": "src/index.js",
   "dependencies": {
     "@devraelfreeze/discordjs-pagination": "^2.7.2",
-    "@powerm1nt/vinted-api": "^2.12.10",
+    "@powerm1nt/vinted-api": "^2.13.11",
     "@sentry/node": "^7.45.0",
     "@sentry/tracing": "^7.45.0",
     "chalk": "^4.1.2",
