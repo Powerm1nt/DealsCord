@@ -71,7 +71,8 @@ module.exports = {
       size: interaction.options.getString('size'),
       reputation: interaction.options.getString('reputation'),
       page: interaction.options.getNumber('page'),
-      order: interaction.options.getString('filter')
+      order: interaction.options.getString('filter'),
+      brand: interaction.options.getString('brand')
     }, interaction)
       .then(async (alert) => {
         await interaction.reply({
