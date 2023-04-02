@@ -16,10 +16,10 @@ for (const file of commandFiles) {
 }
 
 // Construct and prepare an instance of the REST module
-const rest = new REST({ version: '10' }).setToken(TOKEN);
+const rest = new REST({ version: '10' }).setToken(TOKEN)
 
 // and deploy your commands!
-(async () => {
+async function deployCommands () {
   try {
     console.log(`Started refreshing ${commands.length} application (/) commands.`)
 
@@ -34,4 +34,6 @@ const rest = new REST({ version: '10' }).setToken(TOKEN);
     // And of course, make sure you catch and log any errors!
     console.error(error)
   }
-})()
+}
+
+module.exports = { deployCommands }
