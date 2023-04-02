@@ -8,6 +8,7 @@ const removeCommand = new SlashCommandBuilder()
     option
       .setName('name')
       .setDescription('Name of the alert')
+      .setAutocomplete(true)
       .setRequired(true)
   )
 
@@ -22,5 +23,17 @@ module.exports = {
         await interaction.reply({ content: `🛑 **${error.message}**`, ephemeral: true })
         console.error(error)
       })
+  },
+  async autocomplete (interaction) {
+    const focusedOption = interaction.options.getFocused(true)
+    const alertManager = getAlertManager()
+    const alertNames = await alertManager.getAlerts(interaction.guild.id)
+    const alertNamesFiltered = alertNames.filter((alertName) => alertName.name.includes(focusedOption.value))
+
+    return await interaction.respond(
+      alertNamesFiltered.map((alertName) => ({
+        name: alertName.name,
+        value: alertName.name
+      })))
   }
 }
