@@ -6,6 +6,7 @@ const { ToadScheduler, SimpleIntervalJob, AsyncTask, Task } = require('toad-sche
 const mongoose = require('mongoose')
 const Alert = mongoose.model('Alert', AlertModel)
 const { v4: uuidv4 } = require('uuid')
+const chalk = require('chalk')
 
 class AlertManager {
   scheduler = new ToadScheduler()
@@ -116,28 +117,55 @@ class AlertManager {
       })
   }
 
-  async addAlert (alert, interaction) {
-    alert.id = uuidv4().split('-')[0]
-    // Make the size an array
-    alert.size = alert.size !== null ? String(alert.size).split(/[ ;,]+/) : []
-    if (!alert.name) throw new Error('Name is required')
-    if (!alert.id) throw new Error('ID is required')
+  async editAlert (alert, interaction) {
+    return await this.validateAlert(alert).then(async () => {
+      return await Alert.find({ name: alert.name, guildId: interaction.guildId }).then(async (data) => {
+        if (!data || data.length <= 0) throw new Error('Alert does not exist')
 
-    const _date = parse(alert.interval.toString(), 'second')
-    if (!_date || _date < 60) throw new Error('Interval must be at least 1 minute, format example: 1h 30m 10s')
-    alert.interval = _date
-    // check if the alert already exists on the database
-    await Alert.findOne({ name: alert.name, guildId: interaction.guildId }).then(async (data) => {
-      if (data) throw new Error('Alert already exists')
+        return await Alert.updateOne({ id: data.id, guildId: interaction.guildId }, alert)
+          .then(async () => {
+            this.alerts = this.alerts.filter(a => a.id !== alert.id)
+            await this.syncAlerts(interaction)
+            console.log(chalk.green(`Alert ${chalk.bold.white(alert.name)} updated`))
+            return data[0]
+          })
+          .catch((err) => {
+            throw err
+          })
+      })
     })
+  }
 
-    return await Alert.create(alert).then(async () => {
-      console.log('Alert created successfully ' + alert.name + ' ' + alert.id)
-      this.syncAlerts(interaction).then(() => {
-        interaction.channel.send(`<@${interaction.user.id}> ✅ **Alerte créée avec succès !**`)
+  async validateAlert (alert) {
+    return await new Promise((resolve, reject) => {
+      alert.id = uuidv4().split('-')[0]
+      // Make the size an array
+      alert.size = alert.size !== null ? String(alert.size).split(/[ ;,]+/) : []
+      if (!alert.name) reject(new Error('Name is required'))
+      if (!alert.id) reject(new Error('ID is required'))
+
+      const _date = parse(alert.interval.toString(), 'second')
+      if (!_date || _date < 60) reject(new Error('Interval must be at least 1 minute, format example: 1h 30m 10s'))
+      alert.interval = _date
+      resolve(alert)
+    })
+  }
+
+  async addAlert (alert, interaction) {
+    return await this.validateAlert(alert).then(async (alert) => {
+      // check if the alert already exists on the database
+      await Alert.findOne({ name: alert.name, guildId: interaction.guildId }).then(async (data) => {
+        if (data) throw new Error('Alert already exists')
       })
 
-      return alert
+      return await Alert.create(alert).then(async () => {
+        console.log('Alert created successfully ' + alert.name + ' ' + alert.id)
+        this.syncAlerts(interaction).then(() => {
+          interaction.channel.send(`<@${interaction.user.id}> ✅ **Alerte créée avec succès !**`)
+        })
+
+        return alert
+      })
     })
   }
 
