@@ -76,7 +76,7 @@ module.exports = {
     }, interaction)
       .then(async (alert) => {
         await interaction.reply({
-          content: `ℹ️ L'alerte **${alert.name}** a été envoyé avec succès !`, ephemeral: true
+          content: `ℹ️ L'alerte **${alert.name}** a été créé avec succès !`, ephemeral: true
         })
       })
       .catch(async (error) => {

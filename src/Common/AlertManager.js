@@ -117,26 +117,8 @@ class AlertManager {
       })
   }
 
-  async editAlert (alert, interaction) {
-    return await this.validateAlert(alert).then(async () => {
-      return await Alert.find({ name: alert.name, guildId: interaction.guildId }).then(async (data) => {
-        if (!data || data.length <= 0) throw new Error('Alert does not exist')
-
-        return await Alert.updateOne({ id: data.id, guildId: interaction.guildId }, alert)
-          .then(async () => {
-            this.alerts = this.alerts.filter(a => a.id !== alert.id)
-            await this.syncAlerts(interaction)
-            console.log(chalk.green(`Alert ${chalk.bold.white(alert.name)} updated`))
-            return data[0]
-          })
-          .catch((err) => {
-            throw err
-          })
-      })
-    })
-  }
-
   async validateAlert (alert) {
+    // eslint-disable-next-line no-undef
     return await new Promise((resolve, reject) => {
       alert.id = uuidv4().split('-')[0]
       // Make the size an array
@@ -160,10 +142,7 @@ class AlertManager {
 
       return await Alert.create(alert).then(async () => {
         console.log('Alert created successfully ' + alert.name + ' ' + alert.id)
-        this.syncAlerts(interaction).then(() => {
-          interaction.channel.send(`<@${interaction.user.id}> ✅ **Alerte créée avec succès !**`)
-        })
-
+        await this.syncAlerts(interaction)
         return alert
       })
     })

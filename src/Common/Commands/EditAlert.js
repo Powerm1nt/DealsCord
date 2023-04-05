@@ -2,23 +2,26 @@ const { SlashCommandBuilder } = require('discord.js')
 const { getAlertManager } = require('../AlertManager')
 const vinted = require('@powerm1nt/vinted-api')
 
-const editAlertCommand = new SlashCommandBuilder()
+const createCommand = new SlashCommandBuilder()
   .setName('edit')
-  .setDescription('Edit an existing vinted post alert')
+  .setDescription('Edit a vinted post alert')
   .addStringOption(option => option
     .setName('name')
     .setDescription('Name of the alert')
-    .setAutocomplete(true)
-    .setRequired(true))
+    .setRequired(true)
+    .setAutocomplete(true))
   .addStringOption(option => option
     .setName('keywords')
-    .setDescription('Keywords to search for'))
+    .setDescription('Keywords to search for')
+    .setRequired(true))
   .addChannelOption(option => option
     .setName('channel')
-    .setDescription('Channel to send the alert to'))
+    .setDescription('Channel to send the alert to')
+    .setRequired(true))
   .addStringOption(option => option
     .setName('interval')
-    .setDescription('Interval to check for new posts'))
+    .setDescription('Interval to check for new posts')
+    .setRequired(true))
   .addStringOption(option => option
     .setName('brand')
     .setDescription('Brand to search for')
@@ -50,53 +53,39 @@ const editAlertCommand = new SlashCommandBuilder()
     .setDescription('Reputation to search for'))
 
 module.exports = {
-  data: editAlertCommand,
+  data: createCommand,
   async execute (interaction) {
-    await getAlertManager().getAlerts(interaction.guild.id).then(async (alerts) => {
-      const alert = alerts.find(alert => alert.name === interaction.options.getString('name'))
-
-      const name = interaction.options.getString('name')
-      const keywords = interaction.options.getString('keywords') !== undefined ? interaction.options.getString('keywords') : alert.keywords
-      const guildId = interaction.guild.id
-      const channelId = interaction.options.getChannel('channel') !== undefined ? interaction.options.getChannel('channel') : alert.channelId
-      const interval = interaction.options.getString('interval') !== undefined ? interaction.options.getString('interval') : alert.interval
-      const author = interaction.user.id
-      const priceFrom = interaction.options.getString('price-from') !== undefined ? interaction.options.getString('price-from') : alert.priceFrom
-      const priceTo = interaction.options.getString('price-to') !== undefined ? interaction.options.getString('price-to') : alert.priceTo
-      const size = interaction.options.getString('size') !== undefined ? interaction.options.getString('size') : alert.size
-      const reputation = interaction.options.getString('reputation') !== undefined ? interaction.options.getString('reputation') : alert.reputation
-      const page = interaction.options.getNumber('page') !== undefined ? interaction.options.getNumber('page') : alert.page
-      const order = interaction.options.getString('filter') !== undefined ? interaction.options.getString('filter') : alert.order
-      const brand_id = interaction.options.getString('brand') !== undefined ? interaction.options.getString('brand') : alert.brand
-
-      await getAlertManager().editAlert({
-        name,
-        keywords,
-        guildId,
-        channelId,
-        interval,
-        author,
-        priceFrom,
-        priceTo,
-        size,
-        reputation,
-        page,
-        order,
-        brand_id
-      }, interaction)
-        .then(data => {
-          interaction.reply({
-            content: `Alert **${data.name}** edited successfully`,
-            ephemeral: true
+    await getAlertManager().removeAlert(interaction.options.getString('name'), interaction.guild.id, interaction.user.id)
+      .then(async () => {
+        await getAlertManager().addAlert({
+          name: interaction.options.getString('name'),
+          keywords: interaction.options.getString('keywords'),
+          guildId: interaction.guild.id,
+          channelId: interaction.options.getChannel('channel').id,
+          interval: interaction.options.getString('interval'),
+          author: interaction.user.id,
+          price_from: interaction.options.getString('price-from'),
+          price_to: interaction.options.getString('price-to'),
+          size: interaction.options.getString('size'),
+          reputation: interaction.options.getString('reputation'),
+          page: interaction.options.getNumber('page'),
+          order: interaction.options.getString('filter'),
+          brand_id: interaction.options.getString('brand')
+        }, interaction)
+          .then(async (alert) => {
+            await interaction.reply({
+              content: `ℹ️ L'alerte **${alert.name}** a été modifié avec succès !`, ephemeral: true
+            })
           })
-        })
-        .catch((err) => {
-          interaction.reply({
-            content: `🛑 **Error editing alert ${interaction.options.getString('name')}:** ${err.message}`,
-            ephemeral: true
+          .catch(async (error) => {
+            await interaction.reply({ content: `🛑 **${error.message}**`, ephemeral: true })
+            console.error(error)
           })
-        })
-    })
+      })
+      .catch(async (error) => {
+        await interaction.reply({ content: `🛑 **${error.message}**`, ephemeral: true })
+        console.error(error)
+      })
   },
   async autocomplete (interaction) {
     const focusedOption = interaction.options.getFocused(true)
