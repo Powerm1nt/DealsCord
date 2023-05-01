@@ -40,7 +40,7 @@ class AlertManager {
     return await Alert.find({})
       .then(async (data) => {
         for (const alert of data) {
-          if (process.env.DEVEL === 'true') console.log(alert)
+          if (process.env.DEBUG === 'true') console.log(alert)
           const priceFrom = alert.price_from
           const priceTo = alert.price_to
           const size = alert.size
@@ -107,7 +107,7 @@ class AlertManager {
                   }).catch((err) => {
                     if (err.status === 403) {
                       console.log('Channel not found, removing alert...')
-                      if (process.env.DEVEL === 'true') console.log(alert)
+                      if (process.env.DEBUG === 'true') console.log(alert)
                       this.removeAlert(alert.name, alert.guildId)
                         .then(() => {
                           interaction.user.send(`⚠️ Une erreur est survenue lors de la vérification des alertes **(alerte ${alert.name} dans l'un de vos serveurs)**, \nveuillez vérifier que le bot a bien les permissions nécessaires dans le salon où vous avez créé l'alerte.\n\nVeuillez noter que l'alerte se supprime automatiquement si cette erreur se produit.`)

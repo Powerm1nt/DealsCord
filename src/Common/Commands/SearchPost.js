@@ -98,7 +98,7 @@ module.exports = {
         const searchUrl = new URL(url)
         console.log(searchUrl.href)
         await vinted.search(searchUrl).then(async (data) => {
-          if (process.env.DEVEL === 'true') console.log(data)
+          if (process.env.DEBUG === 'true') console.log(data)
           await new VintedPost().makePost(interaction, data.items)
         })
           .catch((err) => {
