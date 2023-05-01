@@ -2,7 +2,12 @@ const AlertModel = require('./DataModels/AlertModel')
 const parse = require('parse-duration')
 const vinted = require('@powerm1nt/vinted-api')
 const { generateEmbed } = require('./Embeds/VintedCollections')
-const { ToadScheduler, SimpleIntervalJob, AsyncTask, Task } = require('toad-scheduler')
+const {
+  ToadScheduler,
+  SimpleIntervalJob,
+  AsyncTask,
+  Task
+} = require('toad-scheduler')
 const mongoose = require('mongoose')
 const Alert = mongoose.model('Alert', AlertModel)
 const { v4: uuidv4 } = require('uuid')
@@ -31,7 +36,7 @@ class AlertManager {
     return await Alert.find({})
       .then(async (data) => {
         for (const alert of data) {
-          console.log(alert)
+          if (process.env.DEVEL === 'true') console.log(alert)
           const priceFrom = alert.price_from
           const priceTo = alert.price_to
           const size = alert.size
@@ -78,7 +83,8 @@ class AlertManager {
                           //  If not, send the embed and add it to the cache
                           console.log('New post found, sending it to the channel... ' + item.id + ' ' + item.title)
                           await channel.send({
-                            content: '✨ **Nouveau Post trouvé !**', embeds: [generateEmbed(item, null)]
+                            content: '✨ **Nouveau Post trouvé !**',
+                            embeds: [generateEmbed(item, null)]
                           }).catch((err) => {
                             throw err
                           })
@@ -90,7 +96,7 @@ class AlertManager {
                   }).catch((err) => {
                     if (err.status === 403) {
                       console.log('Channel not found, removing alert...')
-                      console.log(alert)
+                      if (process.env.DEVEL === 'true') console.log(alert)
                       this.removeAlert(alert.name, alert.guildId)
                         .then(() => {
                           interaction.user.send(`⚠️ Une erreur est survenue lors de la vérification des alertes **(alerte ${alert.name} dans l'un de vos serveurs)**, \nveuillez vérifier que le bot a bien les permissions nécessaires dans le salon où vous avez créé l'alerte.\n\nVeuillez noter que l'alerte se supprime automatiquement si cette erreur se produit.`)
@@ -110,7 +116,9 @@ class AlertManager {
 
           if (!this.alerts.find(a => a.id === alert.id)) {
             this.alerts.push({
-              name: alert.name, id: alert.id, data: alert
+              name: alert.name,
+              id: alert.id,
+              data: alert
             })
           }
         }
@@ -136,7 +144,10 @@ class AlertManager {
   async addAlert (alert, interaction) {
     return await this.validateAlert(alert).then(async (alert) => {
       // check if the alert already exists on the database
-      await Alert.findOne({ name: alert.name, guildId: interaction.guildId }).then(async (data) => {
+      await Alert.findOne({
+        name: alert.name,
+        guildId: interaction.guildId
+      }).then(async (data) => {
         if (data) throw new Error('Alert already exists')
       })
 
@@ -152,7 +163,10 @@ class AlertManager {
     if (!name) throw new Error('Name is required')
     if (!guildId) throw new Error('Guild ID is required')
 
-    return await Alert.findOne({ name, guildId }).then(async alert => {
+    return await Alert.findOne({
+      name,
+      guildId
+    }).then(async alert => {
       if (!alert || !this.alerts.find(a => a.id === alert.id)) throw new Error('Alert does not exist')
       // Cancel the job and delete the element from the array
       this.scheduler.stopById(alert.id)
