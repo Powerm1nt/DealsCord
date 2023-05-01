@@ -24,8 +24,9 @@ jobs:
           echo "TOKEN=${{ secrets.DISCORD_TOKEN }}" > .env
           echo "CLIENT_ID=${{ secrets.DISCORD_CLIENTID }}" >> .env
           echo "DB_URI=${{ secrets.MONGODB_URI }}" >> .env
-          echo "PM2_PUBLIC_KEY=${{ secrets.PM2_PUBLIC_KEY }}" >> .env
-          echo "PM2_SECRET_KEY=${{ secrets.PM2_SECRET_KEY }}" >> .env
+          echo "export PM2_PUBLIC_KEY=${{ secrets.PM2_PUBLIC_KEY }}" >> app.sh
+          echo "export PM2_SECRET_KEY=${{ secrets.PM2_SECRET_KEY }}" >> app.sh
+          echo "pm2-runtime src/index.js" >> app.sh
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
