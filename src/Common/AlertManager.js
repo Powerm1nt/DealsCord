@@ -12,6 +12,10 @@ const mongoose = require('mongoose')
 const Alert = mongoose.model('Alert', AlertModel)
 const { v4: uuidv4 } = require('uuid')
 const chalk = require('chalk')
+const {
+  excludeCategory,
+  categories
+} = require('./Filters')
 
 class AlertManager {
   scheduler = new ToadScheduler()
@@ -80,8 +84,15 @@ class AlertManager {
                       for (const item of data.items) {
                         //  Check if the post is already in the cache
                         if (!alert.cache.find(c => c.id === item.id)) {
+                          // Check if the post is in the excluded types
+                          if (excludeCategory(categories.accessoires, item.url)) {
+                            console.log('Excluding post ' + item.id + ' ' + item.title)
+                            continue
+                          }
+
                           //  If not, send the embed and add it to the cache
                           console.log('New post found, sending it to the channel... ' + item.id + ' ' + item.title)
+
                           await channel.send({
                             content: '✨ **Nouveau Post trouvé !**',
                             embeds: [generateEmbed(item, null)]

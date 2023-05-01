@@ -1,5 +1,13 @@
 const { EmbedBuilder } = require('discord.js')
-const { pagination, ButtonTypes, ButtonStyles } = require('@devraelfreeze/discordjs-pagination')
+const {
+  pagination,
+  ButtonTypes,
+  ButtonStyles
+} = require('@devraelfreeze/discordjs-pagination')
+const {
+  excludeCategory,
+  categories
+} = require('../Filters')
 
 function generateEmbed (post, interaction) {
   const avatar = interaction && interaction.client.user.avatarURL()
@@ -30,7 +38,11 @@ function generateEmbed (post, interaction) {
         value: Math.round(post.price * 100) / 100 + ' ' + post.currency,
         inline: false
       },
-      { name: '✨ Réputation', value: `${fullStarsString} (${rating})`, inline: false }
+      {
+        name: '✨ Réputation',
+        value: `${fullStarsString} (${rating})`,
+        inline: false
+      }
     )
     .setTimestamp()
     .setFooter(interaction
@@ -83,6 +95,7 @@ class VintedCollections {
     this.arrayEmbeds = []
 
     posts.forEach((post, index) => {
+      excludeCategory(categories.accessoires, post.url) &&
       this.arrayEmbeds.push(generateEmbed(post, interaction))
     })
 
@@ -109,4 +122,7 @@ class VintedCollections {
   }
 }
 
-module.exports = { VintedPost: VintedCollections, generateEmbed }
+module.exports = {
+  VintedPost: VintedCollections,
+  generateEmbed
+}
