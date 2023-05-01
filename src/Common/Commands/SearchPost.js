@@ -90,12 +90,7 @@ module.exports = {
         size && sizeArray.forEach((size, index) => {
           if (sizeArray.length >= 1 && size !== 'null') {
             // add '&' character to separate query parameters
-            if (url.split('?').length - 1) {
-              url += '&'
-            } else {
-              url += '?'
-            }
-
+            url.split('?').length - 1 ? url += '&' : url += '?'
             url += `size=${size}`
           }
         })
