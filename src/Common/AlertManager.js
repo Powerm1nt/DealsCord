@@ -85,7 +85,7 @@ class AlertManager {
                         //  Check if the post is already in the cache
                         if (!alert.cache.find(c => c.id === item.id)) {
                           // Check if the post is in the excluded types
-                          if (excludeCategory(categories.accessoires, item.url)) {
+                          if (excludeCategory(item.url, categories.accessoires, categories.divertissement, categories.maison)) {
                             console.log('Excluding post ' + item.id + ' ' + item.title)
                             continue
                           }

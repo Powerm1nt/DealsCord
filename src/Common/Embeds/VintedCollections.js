@@ -95,9 +95,17 @@ class VintedCollections {
     this.arrayEmbeds = []
 
     posts.forEach((post, index) => {
-      excludeCategory(categories.accessoires, post.url) &&
+      excludeCategory(post.url, categories.accessoires, categories.divertissement, categories.maison) &&
       this.arrayEmbeds.push(generateEmbed(post, interaction))
     })
+
+    if (this.arrayEmbeds.length === 0) {
+      await interaction.reply({
+        content: '⚠️ Aucun résultat trouvé.',
+        ephemeral: true
+      })
+      return
+    }
 
     await pagination({
       embeds: this.arrayEmbeds,
