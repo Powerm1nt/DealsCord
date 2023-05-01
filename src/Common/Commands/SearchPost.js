@@ -23,10 +23,22 @@ const searchCommand = new SlashCommandBuilder()
       .setName('filter')
       .setDescription('Filter to search for')
       .addChoices(
-        { name: 'Newest', value: 'newest_first' },
-        { name: 'Pertinence', value: 'pertinence' },
-        { name: 'Price: Low to High', value: 'price_low_to_high' },
-        { name: 'Price: High to Low', value: 'price_high_to_low' }
+        {
+          name: 'Newest',
+          value: 'newest_first'
+        },
+        {
+          name: 'Pertinence',
+          value: 'pertinence'
+        },
+        {
+          name: 'Price: Low to High',
+          value: 'price_low_to_high'
+        },
+        {
+          name: 'Price: High to Low',
+          value: 'price_high_to_low'
+        }
       )
   )
   .addNumberOption(option =>
@@ -72,7 +84,7 @@ module.exports = {
         const order = interaction.options.getString('filter')
         const brand = interaction.options.getString('brand')
 
-        const sizeArray = String(size).split(/[ ;,]+/)
+        const sizeArray = String(size).split(/[ ;,]+/) // split by space, semicolon or comma
         let url = `https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}${brand ? `&brand_id[]=${brand}` : ''}`
 
         size && sizeArray.forEach((size, index) => {
