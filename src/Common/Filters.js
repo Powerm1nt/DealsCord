@@ -43,16 +43,19 @@ function excludeCategory (category, url) {
 
   // Iterate through each word in the category and check if it's included in the URL
   for (const word of category) {
-    if (lowerCaseUrl.includes(word.toLowerCase())) {
-      return false
+    if (!lowerCaseUrl.includes(word.toLowerCase())) {
+      return true
     }
   }
 
-  return true
+  return false
 }
 
 // Example:
 // const value = excludeCategory(categories.accessoires, 'https://www.vinted.fr/vetements/?search_text=jeans&price_from=0&price_to=100&reputation=1&order=price_asc&page=1&brand_id[]=1&size=XS')
 // console.log(value)
 
-export { categories, excludeCategory }
+module.exports = {
+  categories,
+  excludeCategory
+}
