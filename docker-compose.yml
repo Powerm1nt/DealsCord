@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  app:
+    container_name: vintedbot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      - MONGO_URI=mongodb://db:27017/vintedbot
+      - NODE_ENV=production
+    networks:
+      - app-network
+
+  db:
+    container_name: vintedbot-db
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - db-data:/data/db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
