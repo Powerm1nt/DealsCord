@@ -27,12 +27,40 @@ const createCommand = new SlashCommandBuilder()
     .setDescription('Brand to search for')
     .setAutocomplete(true))
   .addStringOption(option => option
+    .setName('excluded-types')
+    .setDescription('Excluded types to search for')
+    .setRequired(false)
+    .addChoices({
+      name: 'Accessoires',
+      value: 'accessoires'
+    }, {
+      name: 'Divertissement',
+      value: 'divertissement'
+    }, {
+      name: 'Maison',
+      value: 'maison'
+    }, {
+      name: 'Hommes',
+      value: 'hommes'
+    },
+    {
+      name: 'Femmes',
+      value: 'femmes'
+    }
+    ))
+  .addStringOption(option => option
     .setName('filter')
     .setDescription('Filter to search for')
-    .addChoices({ name: 'Newest', value: 'newest_first' }, {
+    .addChoices({
+      name: 'Newest',
+      value: 'newest_first'
+    }, {
       name: 'Pertinence',
       value: 'pertinence'
-    }, { name: 'Price: Low to High', value: 'price_low_to_high' }, {
+    }, {
+      name: 'Price: Low to High',
+      value: 'price_low_to_high'
+    }, {
       name: 'Price: High to Low',
       value: 'price_high_to_low'
     }))
@@ -66,6 +94,7 @@ module.exports = {
           author: interaction.user.id,
           price_from: interaction.options.getString('price-from'),
           price_to: interaction.options.getString('price-to'),
+          excluded_types: interaction.options.getString('excluded-types'),
           size: interaction.options.getString('size'),
           reputation: interaction.options.getString('reputation'),
           page: interaction.options.getNumber('page'),
@@ -74,16 +103,23 @@ module.exports = {
         }, interaction)
           .then(async (alert) => {
             await interaction.reply({
-              content: `ℹ️ L'alerte **${alert.name}** a été modifié avec succès !`, ephemeral: true
+              content: `ℹ️ L'alerte **${alert.name}** a été modifié avec succès !`,
+              ephemeral: true
             })
           })
           .catch(async (error) => {
-            await interaction.reply({ content: `🛑 **${error.message}**`, ephemeral: true })
+            await interaction.reply({
+              content: `🛑 **${error.message}**`,
+              ephemeral: true
+            })
             console.error(error)
           })
       })
       .catch(async (error) => {
-        await interaction.reply({ content: `🛑 **${error.message}**`, ephemeral: true })
+        await interaction.reply({
+          content: `🛑 **${error.message}**`,
+          ephemeral: true
+        })
         console.error(error)
       })
   },

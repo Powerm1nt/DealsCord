@@ -61,15 +61,20 @@ const categories = {
   ]
 }
 
-function excludeCategory (url, ...categories) {
-  // Convert the URL to lowercase for case-insensitive comparison
-  const lowerCaseUrl = url.toLowerCase()
+const validKeys = Object.keys(categories)
 
-  // Iterate through each word in the category and check if it's included in the URL
-  for (const category of categories[0]) {
-    for (const word of category) {
-      if (lowerCaseUrl.includes(word.toLowerCase())) {
-        return false
+function excludeCategory (url, ...category) {
+  for (const cat of category) {
+    // Convert the URL to lowercase for case-insensitive comparison
+    const lowerCaseUrl = url.toLowerCase()
+    if (categories[cat] === undefined) throw new Error('Category is invalid')
+    const values = categories[cat]
+    // Iterate through each word in the category and check if it's included in the URL
+    for (const cat of values) {
+      for (const word of cat) {
+        if (lowerCaseUrl.includes(word.toLowerCase())) {
+          return false
+        }
       }
     }
   }
@@ -78,7 +83,7 @@ function excludeCategory (url, ...categories) {
 }
 
 // Example:
-// const value = excludeCategory('https://www.vinted.fr/vetements/?search_text=jeans&price_from=0&price_to=100&reputation=1&order=price_asc&page=1&brand_id[]=1&size=XS', categories.accessoires, categories.divertissement, categories.maison)
+// const value = excludeCategory('https://www.vinted.fr/vetements/?search_text=jeans&price_from=0&price_to=100&reputation=1&order=price_asc&page=1&brand_id[]=1&size=XS', 'maison', 'divertissement')
 // console.log(value)
 
 module.exports = {

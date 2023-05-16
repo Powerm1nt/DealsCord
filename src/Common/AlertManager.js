@@ -48,6 +48,9 @@ class AlertManager {
           const page = alert.page
           const order = alert.order
           const brand = alert.brand_id
+          const excluded_types = Object.values(alert.excluded_types).map((value) => value)
+
+          console.log('Excluded types: ', excluded_types)
 
           let url = `https://www.vinted.fr/vetements?search_text=${alert.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}${brand ? `&brand_id[]=${brand}` : ''}`
 
@@ -85,7 +88,7 @@ class AlertManager {
                         //  Check if the post is already in the cache
                         if (!alert.cache.find(c => c.id === item.id)) {
                           // Check if the post is in the excluded types
-                          if (excludeCategory(item.url, categories.accessoires, categories.divertissement, categories.maison)) {
+                          if (excludeCategory(item.url, excluded_types)) {
                             console.log('Excluding post ' + item.id + ' ' + item.title)
                             continue
                           }

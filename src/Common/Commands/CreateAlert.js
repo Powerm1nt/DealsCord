@@ -27,12 +27,40 @@ const createCommand = new SlashCommandBuilder()
     .setRequired(false)
     .setAutocomplete(true))
   .addStringOption(option => option
+    .setName('excluded-types')
+    .setDescription('Excluded types to search for')
+    .setRequired(false)
+    .addChoices({
+      name: 'Accessoires',
+      value: 'accessoires'
+    }, {
+      name: 'Divertissement',
+      value: 'divertissement'
+    }, {
+      name: 'Maison',
+      value: 'maison'
+    }, {
+      name: 'Hommes',
+      value: 'hommes'
+    },
+    {
+      name: 'Femmes',
+      value: 'femmes'
+    }
+    ))
+  .addStringOption(option => option
     .setName('filter')
     .setDescription('Filter to search for')
-    .addChoices({ name: 'Newest', value: 'newest_first' }, {
+    .addChoices({
+      name: 'Newest',
+      value: 'newest_first'
+    }, {
       name: 'Pertinence',
       value: 'pertinence'
-    }, { name: 'Price: Low to High', value: 'price_low_to_high' }, {
+    }, {
+      name: 'Price: Low to High',
+      value: 'price_low_to_high'
+    }, {
       name: 'Price: High to Low',
       value: 'price_high_to_low'
     }))
@@ -67,6 +95,7 @@ module.exports = {
       interval: interaction.options.getString('interval'),
       author: interaction.user.id,
       price_from: interaction.options.getString('price-from'),
+      excluded_types: interaction.options.getString('excluded-types'),
       price_to: interaction.options.getString('price-to'),
       size: interaction.options.getString('size'),
       reputation: interaction.options.getString('reputation'),
@@ -76,11 +105,15 @@ module.exports = {
     }, interaction)
       .then(async (alert) => {
         await interaction.reply({
-          content: `ℹ️ L'alerte **${alert.name}** a été créé avec succès !`, ephemeral: true
+          content: `ℹ️ L'alerte **${alert.name}** a été créé avec succès !`,
+          ephemeral: true
         })
       })
       .catch(async (error) => {
-        await interaction.reply({ content: `🛑 **${error.message}**`, ephemeral: true })
+        await interaction.reply({
+          content: `🛑 **${error.message}**`,
+          ephemeral: true
+        })
         console.error(error)
       })
   },

@@ -95,7 +95,7 @@ class VintedCollections {
     this.arrayEmbeds = []
 
     posts.forEach((post, index) => {
-      excludeCategory(post.url, categories.accessoires, categories.divertissement, categories.maison) &&
+      excludeCategory(post.url, interaction.excluded_types) &&
       this.arrayEmbeds.push(generateEmbed(post, interaction))
     })
 
