@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('discord.js')
 const { getAlertManager } = require('../AlertManager')
 
 const createCommand = new SlashCommandBuilder()
-  .setName('editFilters')
+  .setName('edit-filters')
   .setDescription('Edit the filters of a vinted post alert')
   .addStringOption(option => option
     .setName('name')
