@@ -73,10 +73,8 @@ function excludeCategory (url, ...category) {
     if (!validKeys.includes(cat)) throw new Error(`Invalid category: ${cat}`)
     // Iterate through each word in the category and check if it's included in the URL
     for (const cat of values) {
-      for (const word of cat) {
-        if (lowerCaseUrl.includes(word.toLowerCase())) {
-          return false
-        }
+      if (lowerCaseUrl.includes(cat.toLowerCase())) {
+        return false
       }
     }
   }
@@ -85,8 +83,8 @@ function excludeCategory (url, ...category) {
 }
 
 // Example:
-// const value = excludeCategory('https://www.vinted.fr/vetements/?search_text=jeans&price_from=0&price_to=100&reputation=1&order=price_asc&page=1&brand_id[]=1&size=XS', 'maison', 'divertissement')
-// console.log(value)
+const value = excludeCategory('https://www.vinted.fr/vetements/?search_text=jeans&price_from=0&price_to=100&reputation=1&order=price_asc&page=1&brand_id[]=1&size=XS', 'maison', 'divertissement')
+console.log(value)
 
 module.exports = {
   categories,
