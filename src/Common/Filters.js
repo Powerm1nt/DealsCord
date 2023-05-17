@@ -83,8 +83,8 @@ function excludeCategory (url, ...category) {
 }
 
 // Example:
-const value = excludeCategory('https://www.vinted.fr/vetements/?search_text=jeans&price_from=0&price_to=100&reputation=1&order=price_asc&page=1&brand_id[]=1&size=XS', 'maison', 'divertissement')
-console.log(value)
+// const value = excludeCategory('https://www.vinted.fr/vetements/?search_text=jeans&price_from=0&price_to=100&reputation=1&order=price_asc&page=1&brand_id[]=1&size=XS', 'maison', 'divertissement')
+// console.log(value)
 
 module.exports = {
   categories,
