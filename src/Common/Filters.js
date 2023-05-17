@@ -67,8 +67,10 @@ function excludeCategory (url, ...category) {
   for (const cat of category) {
     // Convert the URL to lowercase for case-insensitive comparison
     const lowerCaseUrl = url.toLowerCase()
-    if (categories[cat] === undefined) throw new Error('Category is invalid')
     const values = categories[cat]
+
+    if (categories[cat] === undefined) throw new Error(`Invalid category: ${cat}`)
+    if (!validKeys.includes(cat)) throw new Error(`Invalid category: ${cat}`)
     // Iterate through each word in the category and check if it's included in the URL
     for (const cat of values) {
       for (const word of cat) {
