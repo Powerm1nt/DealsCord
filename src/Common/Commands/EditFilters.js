@@ -29,24 +29,28 @@ const createCommand = new SlashCommandBuilder()
     {
       name: 'Femmes',
       value: 'femmes'
+    },
+    {
+      name: 'Parfums',
+      value: 'parfums'
     }
     ))
 
 module.exports = {
   data: createCommand,
   async execute (interaction) {
-    const alertManager = getAlertManager()
     const alertName = interaction.options.getString('name')
     const excludedTypes = interaction.options.getString('excluded-types')
-    const alert = alertManager.getAlert(alertName)
+    const alert = await getAlertManager().getAlert(interaction.guild.id, alertName)
+
     if (!alert) {
-      await interaction.reply(`No alert found with name ${alertName}`)
-      return
+      return await interaction.reply(`No alert found with name ${alertName}`)
     }
     if (excludedTypes) {
       alert.excludedTypes = excludedTypes
     }
-    await interaction.reply(`Alert ${alertName} updated`)
+
+    return await interaction.reply(`Alert ${alertName} updated`)
   },
   async autocomplete (interaction) {
     const focusedOption = interaction.options.getFocused(true)

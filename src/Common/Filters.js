@@ -23,6 +23,18 @@ const categories = {
     '女性',
     '여자'
   ],
+  parfums: [
+    'Perfumes',
+    'Parfums',
+    'Perfumes',
+    'Parfums',
+    'Profumi',
+    'Perfumes',
+    'Духи',
+    '香水',
+    '香水',
+    '향수'
+  ],
   accessoires: [
     'Accessories',
     'Accessoires',
