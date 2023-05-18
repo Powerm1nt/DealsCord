@@ -139,6 +139,10 @@ class AlertManager {
       })
   }
 
+  getAlert (name) {
+    return this.alerts.find(a => a.name === name)
+  }
+
   async validateAlert (alert) {
     // eslint-disable-next-line no-undef
     return await new Promise((resolve, reject) => {
