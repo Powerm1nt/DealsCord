@@ -36,6 +36,10 @@ class AlertManager {
     this.scheduler.addSimpleIntervalJob(job)
   }
 
+  async updateAlert (alertId, alertData) {
+    return Alert.findOneAndUpdate({ id: alertId }, alertData)
+  }
+
   async syncAlerts (interaction) {
     return await Alert.find({})
       .then(async (data) => {
@@ -48,7 +52,7 @@ class AlertManager {
           const page = alert.page
           const order = alert.order
           const brand = alert.brand_id
-          const excluded_types = Object.values(alert.excluded_types).map((value) => value)
+          const excluded_types = alert.excluded_types && Object.values(alert.excluded_types).map((value) => value)
 
           console.log('Excluded types: ', excluded_types)
 
@@ -139,8 +143,8 @@ class AlertManager {
       })
   }
 
-  getAlert (name) {
-    return this.alerts.find(a => a.name === name)
+  getAlert (guildId, name) {
+    return this.alerts.find(a => a.name === name && a.data.guildId === guildId)
   }
 
   async validateAlert (alert) {
