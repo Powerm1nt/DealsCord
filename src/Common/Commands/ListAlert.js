@@ -18,7 +18,7 @@ module.exports = {
           name: alert.name,
           value: `> Keywords: **${alert.keywords}**\n` +
             `> Interval: **${alert.interval} seconds**\n` +
-            `${alert.excluded_types.length >= 1 ? `> Excluded Types: ${excludedTypesString}` : 'No Excluded Types'}`
+            `> ${alert.excluded_types.length >= 1 ? `Excluded Types: ${excludedTypesString}` : 'No Excluded Types'}`
         }
       })
 
