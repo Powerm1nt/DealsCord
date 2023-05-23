@@ -12,19 +12,31 @@ module.exports = {
       // Display a list of alerts
 
       const alertList = alerts.map(alert => {
+        const excludedTypesString = alert.excluded_types.join(', ')
+
         return {
           name: alert.name,
-          value: `Keywords: **${alert.keywords}** | Interval: **${alert.interval} seconds**`
+          value: `> Keywords: **${alert.keywords}**\n` +
+            `> Interval: **${alert.interval} seconds**\n` +
+            `${alert.data.excluded_types >= 1 ? `> Excluded Types: ${excludedTypesString}` : 'No Excluded Types'}`
         }
       })
 
       const embed = {
         title: 'Alerts',
         description: '**List of all alerts**',
-        fields: alertList || [{ name: 'No alerts', value: 'No alerts found' }]
+        fields: alertList.length >= 1
+          ? alertList
+          : [{
+              name: 'No alerts',
+              value: 'No alerts found'
+            }]
       }
 
-      interaction.reply({ embeds: [embed], ephemeral: true })
+      interaction.reply({
+        embeds: [embed],
+        ephemeral: true
+      })
     })
   }
 }
