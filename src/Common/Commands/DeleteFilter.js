@@ -32,6 +32,8 @@ module.exports = {
     const select = new StringSelectMenuBuilder()
       .setCustomId('category')
       .setPlaceholder('Select category to remove')
+      .setMinValues(1)
+      .setMaxValues(alert.data.excluded_types.length)
       .addOptions(alert.data.excluded_types.map((type) =>
         new StringSelectMenuOptionBuilder().setLabel(type).setValue(type)))
 
@@ -58,8 +60,9 @@ module.exports = {
       time: 15000
     })
     collector.on('collect', async (interaction) => {
-      const selected = interaction.values[0]
-      alert.data.excluded_types = alert.data.excluded_types.filter((type) => type !== selected)
+      const selected = interaction.values
+      console.log(selected)
+      alert.data.excluded_types = alert.data.excluded_types.filter((type) => !selected.includes(type))
       getAlertManager().updateAlert(alert.id, { excluded_types: alert.data.excluded_types }).then(
         async () => {
           await interaction.update({
@@ -82,22 +85,6 @@ module.exports = {
         })
       }
     })
-
-    // return getAlertManager().updateAlert(alert.id, { excluded_types: alert.excluded_types })
-    //   .then(async () => {
-    //     // Display a dropdown with the excluded types
-    //
-    //     return await interaction.reply({
-    //       content: `✅ Alert ${alertName} updated`,
-    //       ephemeral: true
-    //     })
-    //   })
-    //   .catch(async (error) => {
-    //     return await interaction.reply({
-    //       content: `🛑 Error updating alert ${alertName}: ${error.message}`,
-    //       ephemeral: true
-    //     })
-    //   })
   },
   async autocomplete (interaction) {
     const focusedOption = interaction.options.getFocused(true)
