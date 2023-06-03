@@ -87,8 +87,6 @@ class AlertManager {
               .then(async () => {
                 await vinted.search(searchUrl).then(async (data) => {
                   interaction.client.channels.fetch(alert.channelId).then(async (channel) => {
-                    console.log(channel.id)
-                    console.log(alert.cache)
                     if (data && data.items && data.items.length > 0) {
                       for (const item of data.items) {
                         //  Check if the post is already in the cache
