@@ -95,7 +95,7 @@ class AlertManager {
                           // Check if the post is in the excluded types
                           if (excludeCategory(item.url, excluded_types || 'maison', 'accessoires', 'divertissement')) {
                             console.log('Excluding post ' + item.id + ' ' + item.title)
-                            break
+                            // break
                           }
 
                           //  If not, send the embed and add it to the cache
