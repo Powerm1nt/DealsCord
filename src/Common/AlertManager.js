@@ -93,7 +93,7 @@ class AlertManager {
                       for (const item of data.items) {
                         //  Check if the post is already in the cache
                         if (!alert.cache.find(c => c.id === item.id)) {
-                          console.log('Alert found ' + alert.id)
+                          console.log('Alert found ' + item.id)
                           // Check if the post is in the excluded types
                           if (excludeCategory(item.url, excluded_types || 'maison', 'accessoires', 'divertissement')) {
                             console.log('Excluding post ' + item.id + ' ' + item.title)
