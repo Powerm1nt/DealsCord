@@ -77,8 +77,8 @@ class AlertManager {
           // Fetch the cookie and search for the posts
           vinted.fetchCookie().then((data) => {
             vinted.search(searchUrl).then((data) => {
-              data.items.forEach((item) => {
-                alert.cache.push(item)
+              data.forEach(({ items }) => {
+                alert.cache.push(items)
               })
             })
           })
