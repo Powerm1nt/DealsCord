@@ -88,6 +88,11 @@ class AlertManager {
             .catch((error) => {
               // Handle any errors that occur during the fetchCookie or search operations
               console.error('An error occurred:', error)
+              console.error('Alert ID: ' + alert.id)
+              console.error('Alert Name: ' + alert.name)
+              console.error(`Excluded types: ${excluded_types > 0 ? excluded_types : '(Nothing)'}`)
+              console.error('Channel ID: ' + alert.channelId)
+              console.error('Guild ID: ' + alert.guildId)
             })
 
           const task = new AsyncTask(alert.id, async () => {
