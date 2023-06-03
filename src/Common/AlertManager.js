@@ -53,7 +53,7 @@ class AlertManager {
           const order = alert.order
           const brand = alert.brand_id
           const excluded_types = alert.excluded_types && Object.values(alert.excluded_types).map((value) => value)
-
+          alert.cache = [] // Define alert.cache as an array of items
           console.log('Excluded types: ', excluded_types)
 
           let url = `https://www.vinted.fr/vetements?search_text=${alert.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}${brand ? `&brand_id[]=${brand}` : ''}`
@@ -77,7 +77,7 @@ class AlertManager {
           // Fetch the cookie and search for the posts
           vinted.fetchCookie().then((data) => {
             vinted.search(searchUrl).then((data) => {
-              alert.cache = data.items
+              alert.cache = Array.from(data.items)
             })
           })
 
