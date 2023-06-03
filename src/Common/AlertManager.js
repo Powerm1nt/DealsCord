@@ -75,13 +75,20 @@ class AlertManager {
           console.log(searchUrl.href)
 
           // Fetch the cookie and search for the posts
-          vinted.fetchCookie().then((data) => {
-            vinted.search(searchUrl).then((data) => {
-              for (const item of Array.from(data.items)) {
+          vinted.fetchCookie()
+            .then((cookieData) => {
+              return vinted.search(searchUrl)
+            })
+            .then((searchData) => {
+              const items = Array.from(searchData.items)
+              for (const item of items) {
                 alert.cache.push(item)
               }
             })
-          })
+            .catch((error) => {
+              // Handle any errors that occur during the fetchCookie or search operations
+              console.error('An error occurred:', error)
+            })
 
           const task = new AsyncTask(alert.id, async () => {
             console.log('Checking for new posts...')
