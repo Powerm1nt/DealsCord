@@ -117,7 +117,7 @@ class AlertManager {
                     console.error(err)
                     console.error('Alert ID: ' + alert.id)
                     console.error('Alert Name: ' + alert.name)
-                    console.error('Excluded types: ' + excluded_types > 0 ? excluded_types : '(Nothing)')
+                    console.error(`Excluded types: ${excluded_types > 0 ? excluded_types : '(Nothing)'}`)
                     console.error('Channel ID: ' + alert.channelId)
                     console.error('Guild ID: ' + alert.guildId)
                     console.error('-------- [ERROR] --------')
