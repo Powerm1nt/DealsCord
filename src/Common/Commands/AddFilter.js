@@ -1,4 +1,9 @@
-const { SlashCommandBuilder } = require('discord.js')
+const {
+  SlashCommandBuilder,
+  StringSelectMenuBuilder,
+  StringSelectMenuOptionBuilder,
+  ActionRowBuilder
+} = require('discord.js')
 const { getAlertManager } = require('../AlertManager')
 
 const createCommand = new SlashCommandBuilder()
@@ -49,6 +54,17 @@ module.exports = {
         ephemeral: true
       })
     }
+
+    const select = new StringSelectMenuBuilder()
+      .setCustomId('category')
+      .setPlaceholder('Select category to add')
+      .setMinValues(1)
+      .setMaxValues(alert.data.excluded_types.length)
+      .addOptions(alert.data.excluded_types.map((type) =>
+        new StringSelectMenuOptionBuilder().setLabel(type).setValue(type)))
+
+    const row = new ActionRowBuilder()
+      .addComponents(select)
 
     if (excluded_types && alert.data.excluded_types.filter((type) => type === excluded_types).length >= 1) {
       return await interaction.reply({
