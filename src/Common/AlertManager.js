@@ -113,7 +113,15 @@ class AlertManager {
                       }
                     }
                   }).catch((err) => {
-                    console.error(err)
+                    console.error('-------- [ERROR] --------')
+                    console.error(err.message)
+                    console.error('Alert ID: ' + alert.id)
+                    console.error('Alert Name: ' + alert.name)
+                    console.error('Excluded types: ' + excluded_types > 0 ? excluded_types : '(Nothing)')
+                    console.error('Channel ID & Name: ' + alert.channelId + ' ' + interaction.channel.name)
+                    console.error('Guild ID & Name: ' + alert.guildId + ' ' + interaction.channel.guild.name)
+                    console.error(err.stacktrace)
+                    console.error('-------- [ERROR] --------')
                     console.error('Category: ' + excluded_types)
                     if (err.status === 403) {
                       console.log('Channel not found, removing alert...')
