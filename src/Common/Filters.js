@@ -76,8 +76,9 @@ const categories = {
 const validKeys = Object.keys(categories)
 
 function excludeCategory (url, ...category) {
-  for (const cat of category) {
-    // Convert the URL to lowercase for case-insensitive comparison
+  for (let cat of category) {
+    // Convert the value and the URL to lowercase for case-insensitive comparison
+    cat = cat.toLowerCase()
     const lowerCaseUrl = url.toLowerCase()
     const values = categories[cat]
 
