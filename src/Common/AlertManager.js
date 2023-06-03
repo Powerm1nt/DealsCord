@@ -108,7 +108,7 @@ class AlertManager {
                           })
 
                           // Add it to cache
-                          console.log(typeof alert.cache)
+                          console.log(alert.cache)
                           alert.cache.push(item)
                         }
                       }
