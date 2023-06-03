@@ -120,9 +120,9 @@ class AlertManager {
                     console.error('Excluded types: ' + excluded_types > 0 ? excluded_types : '(Nothing)')
                     console.error('Channel ID & Name: ' + alert.channelId + ' ' + interaction.channel.name)
                     console.error('Guild ID & Name: ' + alert.guildId + ' ' + interaction.channel.guild.name)
-                    console.error(err.stacktrace)
                     console.error('-------- [ERROR] --------')
-                    console.error('Category: ' + excluded_types)
+                    console.error(err.stacktrace)
+
                     if (err.status === 403) {
                       console.log('Channel not found, removing alert...')
                       if (process.env.DEBUG === 'true') console.log(alert)
