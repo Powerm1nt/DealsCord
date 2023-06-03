@@ -90,7 +90,7 @@ class AlertManager {
                     if (data?.items?.length > 0) {
                       for (const item of data.items) {
                         //  Check if the post is already in the cache
-                        if (!alert.cache.find(c => c.id === item.id)) {
+                        if (!alert.cache?.find(c => c.id === item.id)) {
                           // Check if the post is in the excluded types
                           if (excludeCategory(item.url, excluded_types || 'maison', 'accessoires', 'divertissement')) {
                             console.log('Excluding post ' + item.id + ' ' + item.title)
@@ -113,6 +113,7 @@ class AlertManager {
                     }
                   }).catch((err) => {
                     console.error(err)
+                    console.error('Category: ' + excluded_types)
                     if (err.status === 403) {
                       console.log('Channel not found, removing alert...')
                       if (process.env.DEBUG === 'true') console.log(alert)
