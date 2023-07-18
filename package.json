@@ -11,7 +11,7 @@
     "chalk": "^4.1.2",
     "discord.js": "^14.8.0",
     "dotenv": "^16.0.3",
-    "mongoose": "^7.0.2",
+    "mongoose": "^7.3.3",
     "parse-duration": "^1.0.3",
     "toad-scheduler": "^2.2.0",
     "uuid": "^9.0.0"
