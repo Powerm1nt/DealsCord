@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js')
 const { getAlertManager } = require('../AlertManager')
+const parse = require('parse-duration')
 
 const listCommand = new SlashCommandBuilder()
   .setName('list')
@@ -17,8 +18,9 @@ module.exports = {
         return {
           name: alert.name,
           value: `> Keywords: **${alert.keywords}**\n` +
-            `> Interval: **${alert.interval} seconds**\n` +
-            `> ${alert.excluded_types.length >= 1 ? `Excluded Types: ${excludedTypesString}` : 'No Excluded Types'}`
+            `> Interval: **${parse(alert.interval)}**\n` +
+            `> ${alert.excluded_types.length >= 1 ? `Excluded Types: ${excludedTypesString}` : 'No Excluded Types'}` +
+            `> Channel: <#${alert.channel}>`
         }
       })
 
