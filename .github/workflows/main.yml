@@ -57,4 +57,4 @@ jobs:
             docker pull ${{ secrets.REGISTRY_USER }}/vintedbot:${{ github.sha }}
             docker stop vintedbot || true
             docker rm vintedbot || true
-            docker run -d --name vintedbot ${{ secrets.REGISTRY_USER }}/vintedbot:${{ github.sha }} 
+            docker run -d --name vintedbot --restart=always ${{ secrets.REGISTRY_USER }}/vintedbot:${{ github.sha }} 
