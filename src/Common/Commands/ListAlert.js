@@ -13,14 +13,14 @@ module.exports = {
       // Display a list of alerts
 
       const alertList = alerts.map(alert => {
-        const excludedTypesString = alert.excluded_types.join(', ')
+        const excludedTypesString = alert.excluded_types?.join(', ')
 
         return {
           name: alert.name,
           value: `> Keywords: **${alert.keywords}**\n` +
             `> Interval: **${parse(alert.interval)}**\n` +
-            `> ${alert.excluded_types.length >= 1 ? `Excluded Types: ${excludedTypesString}` : 'No Excluded Types'}` +
-            `> Channel: <#${alert.channel}>`
+            `> ${alert.excluded_types?.length >= 1 ? `Excluded Types: ${excludedTypesString}` : 'No Excluded Types'}\n` +
+            `> Channel: <#${alert.channelId}>`
         }
       })
 
