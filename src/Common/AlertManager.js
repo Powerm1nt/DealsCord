@@ -113,6 +113,7 @@ class AlertManager {
 
                           //  If not, send the embed and add it to the cache
                           console.log('New post found, sending it to the channel... ' + item.id + ' ' + item.title)
+                          console.log(item)
 
                           await channel.send({
                             content: '✨ **Nouveau Post trouvé !**',
