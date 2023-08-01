@@ -1,4 +1,10 @@
-const { Client, GatewayIntentBits, Events, Collection, ActivityType } = require('discord.js')
+const {
+  Client,
+  GatewayIntentBits,
+  Events,
+  Collection,
+  ActivityType
+} = require('discord.js')
 const chalk = require('chalk')
 const path = require('path')
 const fs = require('fs')
@@ -50,9 +56,15 @@ client.on(Events.InteractionCreate, async interaction => {
     } catch (error) {
       console.error(error)
       if (interaction.replied || interaction.deferred) {
-        await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true })
+        await interaction.followUp({
+          content: 'There was an error while executing this command!',
+          ephemeral: true
+        })
       } else {
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true })
+        await interaction.reply({
+          content: 'There was an error while executing this command!',
+          ephemeral: true
+        })
       }
     }
   } else if (interaction.isAutocomplete()) {
@@ -86,10 +98,13 @@ async function initDb () {
 initDb().then(async () => {
   await client.login(process.env.TOKEN).then(() => {
     client.user.setPresence({
-      activities: [{ name: 'Version: ' + version, type: ActivityType.Playing }],
+      activities: [{
+        name: 'Version: ' + version,
+        type: ActivityType.Playing
+      }],
       status: 'online'
     })
-    getAlertManager().syncAlerts({ client })
+    getAlertManager(client).syncAlerts({ client })
   })
 })
 client.once(Events.ClientReady, () => {

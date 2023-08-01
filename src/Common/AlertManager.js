@@ -20,9 +20,10 @@ const {
 class AlertManager {
   scheduler = new ToadScheduler()
 
-  constructor () {
+  constructor (client) {
     this._clearCookieId = uuidv4().split('-')[0]
     this.alerts = []
+    this.client = client
 
     const clearCookiesTask = new Task(this._clearCookieId,
       () => {
@@ -97,6 +98,7 @@ class AlertManager {
 
           const task = new AsyncTask(alert.id, async () => {
             console.log('Checking for new posts...')
+
             await vinted.fetchCookie()
               .then(async () => {
                 await vinted.search(searchUrl).then(async (data) => {
@@ -113,7 +115,6 @@ class AlertManager {
 
                           //  If not, send the embed and add it to the cache
                           console.log('New post found, sending it to the channel... ' + item.id + ' ' + item.title)
-                          console.log(item)
 
                           await channel.send({
                             content: '✨ **Nouveau Post trouvé !**',
@@ -137,17 +138,27 @@ class AlertManager {
                     console.error('Guild ID: ' + alert.guildId)
                     console.error('-------- [ERROR] --------')
 
-                    if (err.status === 403) {
+                    const reportError = (alert) => {
                       console.log('Channel not found, removing alert...')
                       if (process.env.DEBUG === 'true') console.log(alert)
                       this.removeAlert(alert.name, alert.guildId)
                         .then(() => {
-                          interaction.user.send(`⚠️ Une erreur est survenue lors de la vérification des alertes **(alerte ${alert.name} dans l'un de vos serveurs)**, \nveuillez vérifier que le bot a bien les permissions nécessaires dans le salon où vous avez créé l'alerte.\n\nVeuillez noter que l'alerte se supprime automatiquement si cette erreur se produit.`)
-                            .catch(err => console.error('Failed to send message to user ' + err))
+                          this.client.users.fetch(alert.author).then((user) => {
+                            user.send(`⚠️ Une erreur est survenue lors de la vérification des alertes **(alerte ${alert.name} dans l'un de vos serveurs)**, \nveuillez vérifier que le bot a bien les permissions nécessaires dans le salon où vous avez créé l'alerte.\n\nVeuillez noter que l'alerte se supprime automatiquement si cette erreur se produit.`)
+                              .catch(err => console.error('Failed to send message to user ' + err))
+                          })
                         })
                         .catch((err) => {
                           console.log(err)
                         })
+                    }
+
+                    interaction.client.channels.fetch(alert.channelId).catch(e => {
+                      reportError(alert)
+                    })
+
+                    if (err.status === 403) {
+                      reportError(alert)
                     }
                   })
                 })
@@ -241,9 +252,9 @@ class AlertManager {
   }
 }
 
-function getAlertManager () {
+function getAlertManager (client) {
   if (getAlertManager.instance == null) {
-    getAlertManager.instance = new AlertManager()
+    getAlertManager.instance = new AlertManager(client)
   }
 
   return getAlertManager.instance
