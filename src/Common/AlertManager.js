@@ -76,8 +76,8 @@ class AlertManager {
           console.log(searchUrl.href)
 
           // Fetch the cookie and search for the posts
-          vinted.fetchCookie()
-            .then((cookieData) => {
+          await vinted.fetchCookie()
+            .then(() => {
               return vinted.search(searchUrl)
             })
             .then((searchData) => {
