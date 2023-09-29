@@ -57,7 +57,7 @@ class AlertManager {
           alert.cache = [] // Define alert.cache as an array of items
           console.log('Excluded types: ', excluded_types)
 
-          let url = `https://www.vinted.fr/vetements?search_text=${alert.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}${brand ? `&brand_id[]=${brand}` : ''}`
+          let url = `https://www.vinted.fr/vetements?search_text=${alert.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${reputation ? `&rating=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}${brand ? `&brand_id[]=${brand}` : ''}`
 
           size && size.forEach((_size, index) => {
             if (size.length >= 1 && _size !== 'null') {
@@ -125,6 +125,8 @@ class AlertManager {
 
                           //  If not, send the embed and add it to the cache
                           console.log('New post found, sending it to the channel... ' + item.id + ' ' + item.title)
+
+                          // if (alert.reputation < item.rating)
 
                           await channel.send({
                             content: '✨ **Nouveau Post trouvé !**',
