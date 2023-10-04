@@ -123,6 +123,11 @@ class AlertManager {
                             break
                           }
 
+                          if (item.rating < alert.reputation) {
+                            console.log('Excluding post ' + item.id + ' ' + item.title)
+                            break
+                          }
+
                           //  If not, send the embed and add it to the cache
                           console.log('New post found, sending it to the channel... ' + item.id + ' ' + item.title)
 
