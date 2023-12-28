@@ -1,6 +1,6 @@
 {
   "name": "vinted-bot",
-  "version": "1.30.106",
+  "version": "1.30.107",
   "private": true,
   "main": "src/index.js",
   "dependencies": {
