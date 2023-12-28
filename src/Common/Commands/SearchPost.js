@@ -122,6 +122,7 @@ module.exports = {
         const searchUrl = new URL(url)
         console.log(searchUrl.href)
         await vinted.search(searchUrl).then(async (data) => {
+          console.log(data)
           if (process.env.DEBUG === 'true') console.log(data)
           interaction.excluded_types = interaction.options.getString('excluded-types')
           await new VintedPost().makePost(interaction, data.items)

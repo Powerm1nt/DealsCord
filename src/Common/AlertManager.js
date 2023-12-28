@@ -59,18 +59,18 @@ class AlertManager {
 
           let url = `https://www.vinted.fr/vetements?search_text=${alert.keywords}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${reputation ? `&rating=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}${brand ? `&brand_id[]=${brand}` : ''}`
 
-          size && size.forEach((_size, index) => {
-            if (size.length >= 1 && _size !== 'null') {
-              // add '&' character to separate query parameters
-              if (url.split('?').length - 1) {
-                url += '&'
-              } else {
-                url += '?'
-              }
+          // size && size.forEach((_size, index) => {
+          //   if (size.length >= 1 && _size !== 'null') {
+          //     // add '&' character to separate query parameters
+          //     if (url.split('?').length - 1) {
+          //       url += '&'
+          //     } else {
+          //       url += '?'
+          //     }
 
-              url += `size=${_size}`
-            }
-          })
+          //     url += `size=${_size}`
+          //   }
+          // })
 
           const searchUrl = new URL(url)
           console.log(searchUrl.href)
