@@ -109,6 +109,8 @@ module.exports = {
         const sizeArray = String(size).split(/[ ;,]+/) // split by space, semicolon or comma
         let url = `https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}${brand ? `&brand_id[]=${brand}` : ''}`
 
+        console.log({ size, sizeArray })
+
         size && sizeArray && sizeArray.forEach((size, index) => {
           if (sizeArray.length >= 1 && size !== 'null') {
             // add '&' character to separate query parameters
