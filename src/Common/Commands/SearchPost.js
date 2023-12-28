@@ -111,7 +111,7 @@ module.exports = {
 
         console.log({ size, sizeArray })
 
-        size && sizeArray && sizeArray.forEach((size, index) => {
+        size && sizeArray && sizeArray?.forEach((size, index) => {
           if (sizeArray.length >= 1 && size !== 'null') {
             // add '&' character to separate query parameters
             url.split('?').length - 1 ? url += '&' : url += '?'
