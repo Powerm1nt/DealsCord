@@ -57,4 +57,4 @@ jobs:
             docker pull ${{ secrets.REGISTRY_USER }}/vintedbot:${{ github.sha }}
             docker stop vintedbot || true
             docker rm vintedbot || true
-            docker run -d --name vintedbot --publish 27017:27017 --restart=always ${{ secrets.REGISTRY_USER }}/vintedbot:${{ github.sha }} 
+            docker run -d --name vintedbot --network bridge --restart=always ${{ secrets.REGISTRY_USER }}/vintedbot:${{ github.sha }} 
