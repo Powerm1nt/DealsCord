@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM arm64v8/node:18-alpine
 WORKDIR /usr/app
 
 COPY .env ./
