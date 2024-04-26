@@ -11,11 +11,9 @@ const {
 const mongoose = require('mongoose')
 const Alert = mongoose.model('Alert', AlertModel)
 const { v4: uuidv4 } = require('uuid')
-const chalk = require('chalk')
-const {
-  excludeCategory,
-  categories
-} = require('./Filters')
+const { excludeCategory } = require('./Filters')
+const { printAlertError } = require('./utils')
+const Sentry = require('@sentry/node')
 
 class AlertManager {
   scheduler = new ToadScheduler()
@@ -81,29 +79,15 @@ class AlertManager {
               return vinted.search(searchUrl)
             })
             .then((searchData) => {
-              try {
-                const items = Array.from(searchData.items)
-                for (const item of items) {
-                  alert.cache.push(item)
-                }
-              } catch (error) {
-                // Handle any errors that occur during the fetchCookie or search operations
-                console.error('An error occurred:', error)
-                console.error('Alert ID: ' + alert.id)
-                console.error('Alert Name: ' + alert.name)
-                console.error(`Excluded types: ${excluded_types > 0 ? excluded_types : '(Nothing)'}`)
-                console.error('Channel ID: ' + alert.channelId)
-                console.error('Guild ID: ' + alert.guildId)
+              const items = Array.from(searchData.items)
+              for (const item of items) {
+                alert.cache.push(item)
               }
             })
             .catch((error) => {
               // Handle any errors that occur during the fetchCookie or search operations
-              console.error('An error occurred:', error)
-              console.error('Alert ID: ' + alert.id)
-              console.error('Alert Name: ' + alert.name)
-              console.error(`Excluded types: ${excluded_types > 0 ? excluded_types : '(Nothing)'}`)
-              console.error('Channel ID: ' + alert.channelId)
-              console.error('Guild ID: ' + alert.guildId)
+              Sentry.captureMessage(error)
+              printAlertError(alert, error)
             })
 
           const task = new AsyncTask(alert.id, async () => {
@@ -146,15 +130,8 @@ class AlertManager {
                       }
                     }
                   }).catch((err) => {
-                    console.error('-------- [ERROR] --------')
-                    console.error(err)
-                    console.error('Alert ID: ' + alert.id)
-                    console.error('Alert Name: ' + alert.name)
-                    console.error(`Excluded types: ${excluded_types > 0 ? excluded_types : '(Nothing)'}`)
-                    console.error('Channel ID: ' + alert.channelId)
-                    console.error('Guild ID: ' + alert.guildId)
-                    console.error('-------- [ERROR] --------')
-
+                    printAlertError(alert, err)
+                    Sentry.captureMessage(err)
                     const reportError = (alert) => {
                       console.log('Channel not found, removing alert...')
                       if (process.env.DEBUG === 'true') console.log(alert)
@@ -181,6 +158,7 @@ class AlertManager {
                 })
               })
           }, (err) => {
+            Sentry.captureMessage(err)
             console.log(err)
           })
           if (!this.scheduler.existsById(alert.id)) this.scheduler.addSimpleIntervalJob(new SimpleIntervalJob({ seconds: alert.interval }, task, { id: alert.id }))

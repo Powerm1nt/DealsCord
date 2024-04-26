@@ -4,10 +4,7 @@ const {
   ButtonTypes,
   ButtonStyles
 } = require('@devraelfreeze/discordjs-pagination')
-const {
-  excludeCategory,
-  categories
-} = require('../Filters')
+const { excludeCategory } = require('../Filters')
 
 function generateEmbed (post, interaction) {
   const avatar = interaction && interaction.client.user.avatarURL()
