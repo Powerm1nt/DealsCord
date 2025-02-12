@@ -32,7 +32,7 @@ function generateEmbed (post, interaction) {
     .addFields(
       {
         name: '💵 Prix',
-        value: Math.round(post.price * 100) / 100 + ' ' + post.currency,
+        value: Math.round(post.price?.amount * 100) / 100 + ' ' + post.price?.currency_code,
         inline: false
       },
       {
@@ -93,7 +93,7 @@ class VintedCollections {
 
     posts.forEach((post, index) => {
       excludeCategory(post.url, interaction.excluded_types || 'maison', 'accessoires', 'divertissement') &&
-      this.arrayEmbeds.push(generateEmbed(post, interaction))
+            this.arrayEmbeds.push(generateEmbed(post, interaction))
     })
 
     if (this.arrayEmbeds.length === 0) {

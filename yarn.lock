@@ -894,10 +894,10 @@
   dependencies:
     debug "^4.3.1"
 
-"@powerm1nt/vinted-api@^2.13.13":
-  version "2.13.13"
-  resolved "https://registry.yarnpkg.com/@powerm1nt/vinted-api/-/vinted-api-2.13.13.tgz#e1b9ff6c89ad3b2bff8125077321516b40c4d4a7"
-  integrity sha512-NIqA50bqQa2m42JF9/C5BdVbyrKMhoLeYX7Gh+2Njd9yl2ZWcxBxd0XNLJW/g0oV7eR3lsgTWz8SmYrN/9AcKQ==
+"@powerm1nt/vinted-api@^2.14.15":
+  version "2.14.15"
+  resolved "https://registry.yarnpkg.com/@powerm1nt/vinted-api/-/vinted-api-2.14.15.tgz#60ca8312cd523a4a2a0bd3757486abe22e00ed7e"
+  integrity sha512-6YdLSf/g0Z7GBS6F8hTRoY/yiqEVG/hYMPqW8Dr1fB6esDew6rGdX6rBiYOnMzpXjJR6KtOItTExRB/Aumh6MQ==
   dependencies:
     cookie "^0.4.1"
     https-proxy-agent "^5.0.0"

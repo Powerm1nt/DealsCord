@@ -1,11 +1,11 @@
 {
   "name": "vinted-bot",
-  "version": "1.31.111",
+  "version": "1.32.120",
   "private": true,
   "main": "src/index.js",
   "dependencies": {
     "@devraelfreeze/discordjs-pagination": "^2.7.6",
-    "@powerm1nt/vinted-api": "^2.13.13",
+    "@powerm1nt/vinted-api": "^2.14.15",
     "@sentry/node": "^7.112.2",
     "@sentry/tracing": "^7.112.2",
     "chalk": "^4",
@@ -28,5 +28,6 @@
     "eslint-plugin-promise": "^6.1.1",
     "nodemon": "^3.1.0",
     "pm2": "^5.3.1"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
