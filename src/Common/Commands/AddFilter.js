@@ -15,8 +15,8 @@ const createCommand = new SlashCommandBuilder()
     .setRequired(true)
     .setAutocomplete(true))
   .addStringOption(option => option
-    .setName('excluded-types')
-    .setDescription('Excluded types to search for')
+    .setName('type')
+    .setDescription('Include a specified type')
     .setRequired(true)
     .addChoices({
       name: 'Accessoires',
@@ -63,7 +63,7 @@ module.exports = {
       .addOptions(alert.data.excluded_types.map((type) =>
         new StringSelectMenuOptionBuilder().setLabel(type).setValue(type)))
 
-    const row = new ActionRowBuilder()
+    new ActionRowBuilder()
       .addComponents(select)
 
     if (excluded_types && alert.data.excluded_types.filter((type) => type === excluded_types).length >= 1) {
@@ -71,8 +71,10 @@ module.exports = {
         content: `🛑 Alert ${alertName} already contains ${excluded_types}`,
         ephemeral: true
       })
+    } else if (alert.data.excluded_types) {
+      alert.data.excluded_types.push(excluded_types)
     } else {
-      alert.data.excluded_types ? alert.data.excluded_types.push(excluded_types) : alert.data.excluded_types = [excluded_types]
+      alert.data.excluded_types = [excluded_types]
     }
 
     return getAlertManager().updateAlert(alert.id, { excluded_types: alert.data.excluded_types })

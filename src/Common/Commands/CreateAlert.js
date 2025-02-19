@@ -27,8 +27,8 @@ const createCommand = new SlashCommandBuilder()
     .setRequired(false)
     .setAutocomplete(true))
   .addStringOption(option => option
-    .setName('excluded-types')
-    .setDescription('Excluded types to search for')
+    .setName('type')
+    .setDescription('Included type')
     .setRequired(false)
     .addChoices({
       name: 'Accessoires',
@@ -64,9 +64,6 @@ const createCommand = new SlashCommandBuilder()
       name: 'Price: High to Low',
       value: 'price_high_to_low'
     }))
-  .addNumberOption(option => option
-    .setName('page')
-    .setDescription('Page to search for'))
   .addStringOption(option => option
     .setName('price-from')
     .setDescription('Price to start searching for')
@@ -78,10 +75,6 @@ const createCommand = new SlashCommandBuilder()
   .addStringOption(option => option
     .setName('size')
     .setDescription('Size to search for (separate with space or semicolon)')
-    .setRequired(false))
-  .addStringOption(option => option
-    .setName('reputation')
-    .setDescription('Reputation to search for')
     .setRequired(false))
 
 module.exports = {
@@ -95,11 +88,9 @@ module.exports = {
       interval: interaction.options.getString('interval'),
       author: interaction.user.id,
       price_from: interaction.options.getString('price-from'),
-      excluded_types: interaction.options.getString('excluded-types'),
+      type: interaction.options.getString('type'),
       price_to: interaction.options.getString('price-to'),
       size: interaction.options.getString('size'),
-      reputation: interaction.options.getString('reputation'),
-      page: interaction.options.getNumber('page'),
       order: interaction.options.getString('filter'),
       brand_id: interaction.options.getString('brand')
     }, interaction)

@@ -232,7 +232,7 @@ class AlertManager {
         }
       })
       // Remove the alert from the database
-      await Alert.findOneAndRemove({ id: alert.id })
+      await Alert.findOneAndDelete({ id: alert.id })
     })
   }
 

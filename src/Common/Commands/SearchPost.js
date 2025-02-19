@@ -19,7 +19,7 @@ const searchCommand = new SlashCommandBuilder()
       .setAutocomplete(true)
   )
   .addStringOption(option => option
-    .setName('excluded-types')
+    .setName('type')
     .setDescription('Excluded types to search for')
     .setRequired(false)
     .addChoices({
@@ -63,11 +63,6 @@ const searchCommand = new SlashCommandBuilder()
         }
       )
   )
-  .addNumberOption(option =>
-    option
-      .setName('page')
-      .setDescription('Page to search for')
-  )
   .addStringOption(option =>
     option
       .setName('price-from')
@@ -86,12 +81,6 @@ const searchCommand = new SlashCommandBuilder()
       .setDescription('Size to search for (separate with space or semicolon)')
       .setRequired(false)
   )
-  .addStringOption(option =>
-    option
-      .setName('reputation')
-      .setDescription('Reputation to search for')
-      .setRequired(false)
-  )
 
 module.exports = {
   data: searchCommand,
@@ -101,15 +90,13 @@ module.exports = {
         const priceFrom = interaction.options.getString('price-from')
         const priceTo = interaction.options.getString('price-to')
         const size = interaction.options.getString('size')
-        const reputation = interaction.options.getString('reputation')
-        const page = interaction.options.getString('page')
         const order = interaction.options.getString('filter')
         const brand = interaction.options.getString('brand')
 
         const sizeArray = String(size).split(/[ ;,]+/) // split by space, semicolon or comma
-        let url = `https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}${brand ? `&brand_id[]=${brand}` : ''}`
+        let url = `https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${order ? `&order=${order}` : ''}${brand ? `&brand_id[]=${brand}` : ''}`
 
-        size && sizeArray && sizeArray?.forEach((size, index) => {
+        size && sizeArray && sizeArray?.forEach((size, _) => {
           if (sizeArray.length >= 1 && size !== 'null') {
             // add '&' character to separate query parameters
             url.split('?').length - 1 ? url += '&' : url += '?'
