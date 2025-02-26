@@ -13,6 +13,7 @@ const AlertModel = new Schema({
   size: 'array',
   brand_id: 'number',
   excluded_types: 'array',
+  included_type: 'string',
   reputation: 'number',
   page: 'number',
   order: 'string',

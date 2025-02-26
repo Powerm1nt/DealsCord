@@ -19,7 +19,7 @@ const searchCommand = new SlashCommandBuilder()
       .setAutocomplete(true)
   )
   .addStringOption(option => option
-    .setName('excluded-types')
+    .setName('type')
     .setDescription('Excluded types to search for')
     .setRequired(false)
     .addChoices({
@@ -63,11 +63,6 @@ const searchCommand = new SlashCommandBuilder()
         }
       )
   )
-  .addNumberOption(option =>
-    option
-      .setName('page')
-      .setDescription('Page to search for')
-  )
   .addStringOption(option =>
     option
       .setName('price-from')
@@ -86,30 +81,22 @@ const searchCommand = new SlashCommandBuilder()
       .setDescription('Size to search for (separate with space or semicolon)')
       .setRequired(false)
   )
-  .addStringOption(option =>
-    option
-      .setName('reputation')
-      .setDescription('Reputation to search for')
-      .setRequired(false)
-  )
 
 module.exports = {
   data: searchCommand,
   async execute (interaction) {
     await vinted.fetchCookie()
-      .then(async (data) => {
+      .then(async () => {
         const priceFrom = interaction.options.getString('price-from')
         const priceTo = interaction.options.getString('price-to')
         const size = interaction.options.getString('size')
-        const reputation = interaction.options.getString('reputation')
-        const page = interaction.options.getString('page')
         const order = interaction.options.getString('filter')
         const brand = interaction.options.getString('brand')
 
         const sizeArray = String(size).split(/[ ;,]+/) // split by space, semicolon or comma
-        let url = `https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${reputation ? `&reputation=${reputation}` : ''}${order ? `&order=${order}` : ''}${page ? `&page=${page}` : ''}${brand ? `&brand_id[]=${brand}` : ''}`
+        let url = `https://www.vinted.fr/vetements?search_text=${interaction.options.getString('keywords')}${priceFrom ? `&price_from=${priceFrom}` : ''}${priceTo ? `&price_to=${priceTo}` : ''}${order ? `&order=${order}` : ''}${brand ? `&brand_id[]=${brand}` : ''}`
 
-        size && sizeArray && sizeArray?.forEach((size, index) => {
+        size && sizeArray && sizeArray?.forEach((size, _) => {
           if (sizeArray.length >= 1 && size !== 'null') {
             // add '&' character to separate query parameters
             url.split('?').length - 1 ? url += '&' : url += '?'
@@ -120,7 +107,6 @@ module.exports = {
         const searchUrl = new URL(url)
         console.log(searchUrl.href)
         await vinted.search(searchUrl).then(async (data) => {
-          console.log(data)
           if (process.env.DEBUG === 'true') console.log(data)
           interaction.excluded_types = interaction.options.getString('excluded-types')
           await new VintedPost().makePost(interaction, data.items)

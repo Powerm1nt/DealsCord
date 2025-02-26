@@ -81,10 +81,10 @@ function excludeCategory (url, ...category) {
     const lowerCaseUrl = url.toLowerCase()
     const values = categories[cat]
 
-    if (categories[cat] === undefined || !validKeys.includes(cat)) {
-      console.error(`Invalid category: ${cat}, ignoring.`)
-      return true
-    }
+    // if (categories[cat] === undefined || !validKeys.includes(cat)) {
+    //   console.error(`Invalid category: ${cat}, ignoring.`)
+    //   return true
+    // }
 
     // Iterate through each word in the category and check if it's included in the URL
     for (const cat of values) {

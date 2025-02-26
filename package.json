@@ -1,32 +1,33 @@
 {
   "name": "vinted-bot",
-  "version": "1.30.107",
+  "version": "1.32.120",
   "private": true,
   "main": "src/index.js",
   "dependencies": {
-    "@devraelfreeze/discordjs-pagination": "^2.7.2",
-    "@powerm1nt/vinted-api": "^2.13.13",
-    "@sentry/node": "^7.45.0",
-    "@sentry/tracing": "^7.45.0",
-    "chalk": "^4.1.2",
-    "discord.js": "^14.8.0",
-    "dotenv": "^16.0.3",
-    "mongoose": "^7.3.3",
-    "parse-duration": "^1.0.3",
-    "toad-scheduler": "^2.2.0",
-    "uuid": "^9.0.0"
+    "@devraelfreeze/discordjs-pagination": "^2.7.6",
+    "@powerm1nt/vinted-api": "^2.14.15",
+    "@sentry/node": "^7.112.2",
+    "@sentry/tracing": "^7.112.2",
+    "chalk": "^4",
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.5",
+    "mongoose": "^8.10.1",
+    "parse-duration": "^1.1.0",
+    "toad-scheduler": "^3.0.1",
+    "uuid": "^9.0.1"
   },
   "scripts": {
     "start": "pm2 start .",
     "dev": "nodemon ."
   },
   "devDependencies": {
-    "eslint": "^8.30.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.6.0",
+    "eslint": "^9.1.1",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^17.3.1",
     "eslint-plugin-promise": "^6.1.1",
-    "nodemon": "^2.0.22",
-    "pm2": "^5.3.0"
-  }
+    "nodemon": "^3.1.0",
+    "pm2": "^5.3.1"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

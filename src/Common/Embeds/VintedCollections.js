@@ -4,16 +4,14 @@ const {
   ButtonTypes,
   ButtonStyles
 } = require('@devraelfreeze/discordjs-pagination')
-const {
-  excludeCategory,
-  categories
-} = require('../Filters')
+const { excludeCategory } = require('../Filters')
 
 function generateEmbed (post, interaction) {
   const avatar = interaction && interaction.client.user.avatarURL()
   const rating = post.favourite_count
+  // TODO: Change the Evaluation display
   const fullStars = 46
-  const halfStars = Math.round((rating / fullStars) * 5)
+  const halfStars = Math.fround((rating / fullStars) * 5)
   const fullStarEmoji = '⭐'
   const fullStarsString = halfStars <= 1 ? fullStarEmoji : fullStarEmoji.repeat(halfStars)
 
@@ -35,13 +33,18 @@ function generateEmbed (post, interaction) {
     .addFields(
       {
         name: '💵 Prix',
-        value: Math.round(post.price * 100) / 100 + ' ' + post.currency,
-        inline: false
+        value: Math.round(post.price?.amount * 100) / 100 + ' ' + post.price?.currency_code,
+        inline: true
       },
       {
-        name: '✨ Réputation',
+        name: '✨ Evaluation',
         value: `${fullStarsString} (${rating})`,
-        inline: false
+        inline: true
+      },
+      {
+        name: '📏 Taille',
+        value: post.size_title,
+        inline: true
       }
     )
     .setTimestamp()
@@ -51,41 +54,24 @@ function generateEmbed (post, interaction) {
           iconURL: avatar
         }
       : { text: `Publication Vinted | ID: ${post.id}` })
-  post.size_title >= 1 && embed.addFields({
-    name: '📏 Taille',
-    value: post.size_title,
-    inline: false
-  })
 
-  post.brand_title && embed.addFields({
+  embed.addFields({
     name: '🏷️ Marque',
-    value: post.brand_title,
-    inline: false
-  })
-
-  post.user.login && embed.addFields({
+    value: post?.brand_title,
+    inline: true
+  },
+  {
     name: '👤 Vendeur',
     value: `[${post.user.login}](${post.user.profile_url})`,
-    inline: false
-  })
-
-  post.category_title && embed.addFields({
-    name: '📦 Catégorie',
-    value: post.category_title,
-    inline: false
-  })
-
-  post.condition_title && embed.addFields({
-    name: '📦 État',
-    value: post.condition_title,
-    inline: false
-  })
-
-  post.color_title && embed.addFields({
-    name: '🎨 Couleur',
-    value: post.color_title,
-    inline: false
-  })
+    inline: true
+  },
+  {
+    name: '📆 Publication',
+    // value: Date.from(post.photo.high_resolution.timestamp).toISOString(),
+    value: 'N/A',
+    inline: true
+  }
+  )
 
   return embed
 }
@@ -94,9 +80,9 @@ class VintedCollections {
   async makePost (interaction, posts) {
     this.arrayEmbeds = []
 
-    posts.forEach((post, index) => {
+    posts.forEach((post, _) => {
       excludeCategory(post.url, interaction.excluded_types || 'maison', 'accessoires', 'divertissement') &&
-      this.arrayEmbeds.push(generateEmbed(post, interaction))
+            this.arrayEmbeds.push(generateEmbed(post, interaction))
     })
 
     if (this.arrayEmbeds.length === 0) {
@@ -122,6 +108,11 @@ class VintedCollections {
         },
         {
           type: ButtonTypes.next,
+          label: 'Next Page',
+          style: ButtonStyles.Success
+        },
+        {
+          type: ButtonTypes.constructor('Test'),
           label: 'Next Page',
           style: ButtonStyles.Success
         }

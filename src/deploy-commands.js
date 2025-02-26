@@ -6,13 +6,20 @@ const path = require('node:path')
 
 const commands = []
 // Grab all the command files from the commands directory you created earlier
-const commandsPath = path.join(__dirname, 'Common/Commands')
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'))
+const commandsDirectory = path.resolve(__dirname, 'Common/Commands')
+const commandFiles = fs.readdirSync(commandsDirectory).filter(file => file.endsWith('.js'))
 
 // Grab the SlashCommandBuilder#toJSON() output of each command's data for deployment
 for (const file of commandFiles) {
-  const command = require(`./Common/Commands/${file}`)
-  commands.push(command.data.toJSON())
+  const filePath = path.resolve(commandsDirectory, file)
+
+  // Validate file path to ensure it's within the allowed directory
+  if (filePath.startsWith(commandsDirectory)) {
+    const command = require(filePath)
+    commands.push(command.data.toJSON())
+  } else {
+    console.warn(`Skipping file ${filePath} as it's not within the allowed directory.`)
+  }
 }
 
 // Construct and prepare an instance of the REST module
